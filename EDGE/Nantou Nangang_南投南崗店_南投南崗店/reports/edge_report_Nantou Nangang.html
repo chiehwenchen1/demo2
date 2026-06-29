@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>南投南崗店 - EDGE 庫存報表</title>
+<style>
+body{margin:0;font-family:"Microsoft JhengHei","Segoe UI",Arial,sans-serif;background:#f4f6f8;color:#1f2937}
+.header{background:linear-gradient(120deg,#0f172a,#1e3a8a);color:white;padding:24px 42px}
+.header h1{margin:0;font-size:28px}
+.header p{margin:6px 0 0;font-size:14px;color:#dbeafe}
+.container{padding:24px 42px 42px}
+.section-title{font-size:18px;font-weight:700;margin:24px 0 12px}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.card{background:white;border-radius:14px;padding:16px;box-shadow:0 4px 12px rgba(0,0,0,.06)}
+.card .l{color:#64748b;font-size:13px;margin-bottom:6px}
+.card .v{font-size:22px;font-weight:800}
+.card.red .v{color:#dc2626} .card.green .v{color:#059669} .card.blue .v{color:#2563eb} .card.orange .v{color:#ea580c}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.chart{background:white;border-radius:14px;padding:14px;box-shadow:0 4px 12px rgba(0,0,0,.06)}
+.chart img{width:100%;display:block}
+table{width:100%;border-collapse:collapse;background:white;border-radius:12px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.06)}
+th{background:#0f172a;color:white;padding:10px 12px;font-size:13px;text-align:left}
+td{padding:8px 12px;border-bottom:1px solid #e5e7eb;font-size:13px}
+tr:nth-child(even) td{background:#f8fafc}
+.badge-oos{display:inline-block;padding:2px 8px;border-radius:20px;background:#fee2e2;color:#b91c1c;font-size:12px;font-weight:700}
+.badge-low{background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:20px;font-size:12px;font-weight:700}
+.badge-ok{background:#dcfce7;color:#166534;padding:2px 8px;border-radius:20px;font-size:12px;font-weight:700}
+.insight{background:#ecfeff;border-left:6px solid #0891b2;padding:14px 18px;border-radius:10px;line-height:1.7;font-size:14px}
+.footer{color:#64748b;font-size:12px;margin-top:28px;text-align:center}
+.scroll-table{max-height:420px;overflow-y:auto;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.06)}
+.scroll-table table{border-radius:0;box-shadow:none}
+.scroll-table thead th{position:sticky;top:0;z-index:1}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>🏪 EDGE 庫存管理報表 — 南投南崗店</h1>
+  <p>Nantou Nangang | 區域: Central | 報表時間: 2026-06-11 15:03</p>
+</div>
+<div class="container">
+
+<div class="section-title">📊 KPI 摘要</div>
+<div class="kpi-grid">
+  <div class="card blue"><div class="l">產品數 (SKU)</div><div class="v">43</div></div>
+  <div class="card green"><div class="l">總庫存量</div><div class="v">3,587</div></div>
+  <div class="card"><div class="l">總庫存價值</div><div class="v">$320,069</div></div>
+  <div class="card orange"><div class="l">近30天銷貨金額</div><div class="v">$768,988</div></div>
+  <div class="card green"><div class="l">✅ 正常庫存</div><div class="v">42</div></div>
+  <div class="card" style="border:2px solid #ff9800"><div class="l">⚠️ 低庫存</div><div class="v">1</div></div>
+  <div class="card red"><div class="l">❌ 缺貨</div><div class="v">0</div></div>
+  <div class="card"><div class="l">近30天銷售量</div><div class="v">8,080</div></div>
+</div>
+
+<div class="section-title">📋 各品類庫存一覽</div>
+<div class="scroll-table">
+<table>
+<thead><tr>
+  <th>品名</th><th>類別</th><th>零售價</th><th>庫存</th><th>最大容量</th><th>補貨點</th><th>庫存率</th><th>狀態</th>
+</tr></thead>
+<tbody>
+        <tr>
+            <td>麥萃無糖麥茶</td>
+            <td>barley_tea</td>
+            <td style="text-align:right">$25</td>
+            <td style="text-align:right">109</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">55%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>立頓原味奶茶</td>
+            <td>lipton_original</td>
+            <td style="text-align:right">$20</td>
+            <td style="text-align:right">109</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">55%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>伯朗咖啡經典原味</td>
+            <td>mr_brown_coffee</td>
+            <td style="text-align:right">$29</td>
+            <td style="text-align:right">108</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">54%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>來一客泡麵韓式泡菜風味</td>
+            <td>noodle1</td>
+            <td style="text-align:right">$25</td>
+            <td style="text-align:right">107</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">54%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>阿Q桶麵</td>
+            <td>noodle2</td>
+            <td style="text-align:right">$35</td>
+            <td style="text-align:right">105</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">52%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>貝思寶兒蜜桃果茶</td>
+            <td>bessie_peach_tea</td>
+            <td style="text-align:right">$17</td>
+            <td style="text-align:right">104</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">52%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>生活泡沫花茶</td>
+            <td>bubble_jasmine_tea</td>
+            <td style="text-align:right">$20</td>
+            <td style="text-align:right">104</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">52%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>可口可樂 920ML</td>
+            <td>big_cola</td>
+            <td style="text-align:right">$49</td>
+            <td style="text-align:right">103</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">52%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>可口可樂 330ML</td>
+            <td>cola_can</td>
+            <td style="text-align:right">$20</td>
+            <td style="text-align:right">103</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">52%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>海尼根啤酒</td>
+            <td>heineken</td>
+            <td style="text-align:right">$59</td>
+            <td style="text-align:right">103</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">52%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>雪碧 600ML</td>
+            <td>sprite</td>
+            <td style="text-align:right">$35</td>
+            <td style="text-align:right">103</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">52%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>新KIRIN一番搾</td>
+            <td>kirin_beer</td>
+            <td style="text-align:right">$48</td>
+            <td style="text-align:right">100</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">50%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>百事可樂 500ML</td>
+            <td>pepsi</td>
+            <td style="text-align:right">$35</td>
+            <td style="text-align:right">98</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">49%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Dalli雙效洗衣膠囊</td>
+            <td>dalli</td>
+            <td style="text-align:right">$210</td>
+            <td style="text-align:right">96</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">48%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Reeva越南河粉</td>
+            <td>noodle3</td>
+            <td style="text-align:right">$39</td>
+            <td style="text-align:right">95</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">48%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>卡迪那台灣地瓜條</td>
+            <td>sweet_potato</td>
+            <td style="text-align:right">$59</td>
+            <td style="text-align:right">93</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">46%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>卡迪那鮮脆薯條</td>
+            <td>big_potato</td>
+            <td style="text-align:right">$259</td>
+            <td style="text-align:right">92</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">46%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>丸米減鹽味噌湯</td>
+            <td>miso_soup</td>
+            <td style="text-align:right">$198</td>
+            <td style="text-align:right">90</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">45%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>鱷魚蚊香</td>
+            <td>croc</td>
+            <td style="text-align:right">$175</td>
+            <td style="text-align:right">89</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">44%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>雷達液體電蚊香</td>
+            <td>raid</td>
+            <td style="text-align:right">$137</td>
+            <td style="text-align:right">89</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">44%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>舒潔衛生紙</td>
+            <td>toilet_paper</td>
+            <td style="text-align:right">$20</td>
+            <td style="text-align:right">89</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">44%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Kid-O三明治餅乾</td>
+            <td>kido</td>
+            <td style="text-align:right">$429</td>
+            <td style="text-align:right">85</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">42%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>可口可樂 600ML</td>
+            <td>cola</td>
+            <td style="text-align:right">$35</td>
+            <td style="text-align:right">82</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">41%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>立頓巧克力奶茶</td>
+            <td>lipton_chocolate</td>
+            <td style="text-align:right">$20</td>
+            <td style="text-align:right">81</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">40%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>KIRIN淡麗GREEN LABEL</td>
+            <td>green_label</td>
+            <td style="text-align:right">$59</td>
+            <td style="text-align:right">79</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">40%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>統一麵蔥燒牛肉</td>
+            <td>noodle4</td>
+            <td style="text-align:right">$25</td>
+            <td style="text-align:right">79</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">80</td>
+            <td style="text-align:right">40%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>可口可樂 435ML</td>
+            <td>small_cola</td>
+            <td style="text-align:right">$28</td>
+            <td style="text-align:right">79</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">40%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>樂天卡士達派</td>
+            <td>custard</td>
+            <td style="text-align:right">$135</td>
+            <td style="text-align:right">75</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">38%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>阿華田</td>
+            <td>ovaltine</td>
+            <td style="text-align:right">$235</td>
+            <td style="text-align:right">73</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">36%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>義美巧克力脆片</td>
+            <td>crunchoco</td>
+            <td style="text-align:right">$79</td>
+            <td style="text-align:right">72</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">36%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>光泉茉莉茶園</td>
+            <td>jasmine_honey_tea</td>
+            <td style="text-align:right">$20</td>
+            <td style="text-align:right">70</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">35%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>生活泡沫紅茶</td>
+            <td>bubble_black_tea</td>
+            <td style="text-align:right">$20</td>
+            <td style="text-align:right">69</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">34%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>百威啤酒 473ML</td>
+            <td>budweiser</td>
+            <td style="text-align:right">$55</td>
+            <td style="text-align:right">69</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">34%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>威滅滅蟑隊</td>
+            <td>combat</td>
+            <td style="text-align:right">$210</td>
+            <td style="text-align:right">67</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">34%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>生活泡沫綠茶</td>
+            <td>bubble_green_tea</td>
+            <td style="text-align:right">$20</td>
+            <td style="text-align:right">66</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">33%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Asahi超爽啤酒</td>
+            <td>asahi</td>
+            <td style="text-align:right">$59</td>
+            <td style="text-align:right">63</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">32%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>摩卡咖啡</td>
+            <td>coffee</td>
+            <td style="text-align:right">$320</td>
+            <td style="text-align:right">59</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">30%</td>
+            <td><span class="badge-low">偏低</span></td>
+        </tr>
+        <tr>
+            <td>寶礦力水得</td>
+            <td>pocali_sweat</td>
+            <td style="text-align:right">$20</td>
+            <td style="text-align:right">58</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">29%</td>
+            <td><span class="badge-low">偏低</span></td>
+        </tr>
+        <tr>
+            <td>卡迪那北海道薯條</td>
+            <td>potato</td>
+            <td style="text-align:right">$59</td>
+            <td style="text-align:right">58</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">29%</td>
+            <td><span class="badge-low">偏低</span></td>
+        </tr>
+        <tr>
+            <td>雪碧 330ML</td>
+            <td>sprite_can</td>
+            <td style="text-align:right">$20</td>
+            <td style="text-align:right">56</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">28%</td>
+            <td><span class="badge-low">偏低</span></td>
+        </tr>
+        <tr>
+            <td>HEINZ番茄醬3入</td>
+            <td>heinz_ketchup</td>
+            <td style="text-align:right">$329</td>
+            <td style="text-align:right">55</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">28%</td>
+            <td><span class="badge-low">偏低</span></td>
+        </tr>
+        <tr>
+            <td>義美薄餅夾心</td>
+            <td>imei</td>
+            <td style="text-align:right">$79</td>
+            <td style="text-align:right">53</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">26%</td>
+            <td><span class="badge-low">偏低</span></td>
+        </tr>
+        <tr>
+            <td>柚香和風蒟蒻雪麵8入</td>
+            <td>konjac_noodle</td>
+            <td style="text-align:right">$419</td>
+            <td style="text-align:right">50</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">25%</td>
+            <td><span class="badge-low">偏低</span></td>
+        </tr></tbody>
+</table>
+</div>
+<div class="section-title">📈 庫存儀表板</div>
+<div class="chart">
+  <img src="edge_dashboard_Nantou Nangang.png" alt="庫存儀表板">
+</div>
+<div class="section-title">💡 庫存洞察</div>
+<div class="insight">
+  <strong>庫存健康度：</strong>43 項產品中，42 項庫存正常，
+  1 項偏低，0 項缺貨。建議優先補貨低庫存品項。
+  近30天銷售（CLOUD） 8080 件，銷貨金額 $768,988。
+</div>
+
+<div class="section-title">📄 交易記錄摘要（近30天）</div>
+<table>
+<thead><tr>
+  <th>類型</th><th>來源</th><th>筆數</th><th>數量</th><th>金額</th>
+</tr></thead>
+<tbody>
+  <tr><td>📤 銷貨</td><td>CLOUD</td><td>1333</td><td>8,080</td><td>$768,988</td></tr>
+  <tr><td>📥 進貨</td><td>EDGE</td><td>42</td><td>1,410</td><td>$93,060</td></tr>
+  <tr><td>🔄 補貨</td><td>EDGE</td><td>0</td><td>0</td><td>-</td></tr>
+</tbody>
+</table>
+
+<div class="footer">
+  USI Smart Retail OS · EDGE 端報表 · 2026-06-11 15:03
+</div>
+</div>
+</body>
+</html>

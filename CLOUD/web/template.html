@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>USI Smart Retail OS - Cloud Dashboard</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"Microsoft JhengHei","Noto Sans CJK TC",Arial,sans-serif;background:#f0f2f5;color:#333}
+.header{background:linear-gradient(135deg,#1a237e,#283593);color:#fff;padding:18px 32px;display:flex;align-items:center;gap:20px;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+.header h1{font-size:22px;font-weight:700;letter-spacing:1px}
+.header .subtitle{font-size:13px;opacity:.8;margin-top:2px}
+.header .badge{background:rgba(255,255,255,.15);padding:4px 14px;border-radius:20px;font-size:12px;margin-left:auto}
+.tabs{background:#fff;padding:0 32px;display:flex;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.tab-btn{padding:14px 28px;font-size:14px;font-weight:500;cursor:pointer;border:none;background:transparent;color:#666;border-bottom:3px solid transparent;transition:all .2s}
+.tab-btn:hover{color:#1a237e;background:#f5f5f5}
+.tab-btn.active{color:#1a237e;border-bottom-color:#1a237e;font-weight:700}
+.content{max-width:1400px;margin:0 auto;padding:24px 32px}
+.tab-pane{display:none}
+.tab-pane.active{display:block}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:24px}
+.kpi-card{background:#fff;border-radius:12px;padding:18px 16px;box-shadow:0 2px 8px rgba(0,0,0,.06);transition:transform .15s}
+.kpi-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.1)}
+.kpi-card .l{display:block;font-size:12px;color:#888;margin-bottom:4px}
+.kpi-card .v{display:block;font-size:24px;font-weight:700;color:#1a237e}
+.kpi-card.accent .v{color:#e65100}
+.kpi-card.danger .v{color:#c62828}
+.kpi-card.warning .v{color:#f57f17}
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+.chart-card{background:#fff;border-radius:12px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.chart-card.full{grid-column:1/-1}
+.chart-card h3{font-size:14px;color:#555;margin-bottom:12px;font-weight:500}
+.chart-card img{width:100%;height:auto;display:block}
+.data-table{width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06);font-size:13px}
+.data-table th{background:#283593;color:#fff;padding:10px;text-align:left;font-weight:500;font-size:12px;white-space:nowrap}
+.data-table td{padding:8px 10px;border-bottom:1px solid #f0f0f0}
+.data-table tr:hover td{background:#f8f9ff}
+.data-table .oos{color:#c62828;font-weight:700}
+.data-table .low{color:#f57f17;font-weight:700}
+.data-table .ok{color:#2e7d32;font-weight:700}
+.store-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(370px,1fr));gap:16px}
+.store-card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.store-card .sh{background:linear-gradient(135deg,#3949ab,#5c6bc0);color:#fff;padding:14px 16px;display:flex;justify-content:space-between;align-items:center}
+.store-card .sh h3{font-size:15px;font-weight:600}
+.store-card .sh .tag{font-size:11px;padding:2px 10px;border-radius:12px;background:rgba(255,255,255,.2)}
+.store-card .sb{padding:12px 16px}
+.store-card .sr{display:flex;justify-content:space-between;padding:5px 0;font-size:13px;border-bottom:1px solid #f5f5f5}
+.store-card .sr:last-child{border-bottom:none}
+.store-card .sr .lb{color:#888}
+.store-card .sr .vl{font-weight:600}
+.store-card .sc{padding:8px 16px 16px}
+.store-card .sc img{width:100%;height:auto}
+.filter-bar{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
+.filter-bar select{padding:8px 14px;border:1px solid #ddd;border-radius:8px;font-size:13px;background:#fff}
+.filter-bar select:focus{outline:none;border-color:#3949ab}
+.refresh-bar{display:flex;justify-content:flex-end;align-items:center;gap:12px;margin-bottom:16px}
+.refresh-bar .ts{font-size:12px;color:#999}
+.refresh-bar .btn{padding:8px 20px;background:#283593;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:13px}
+.refresh-bar .btn:hover{background:#3949ab}
+.footer{margin-top:40px;text-align:center;color:#aaa;font-size:12px;padding:20px 0;border-top:1px solid #e0e0e0}
+@media(max-width:900px){.chart-grid{grid-template-columns:1fr}.tabs{padding:0 16px}.content{padding:16px}.store-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>&#9729;&#65039; USI Smart Retail OS &middot; CLOUD</h1>
+    <div class="subtitle">&#24211;&#23384;&#31649;&#29702;&#25818;&#34920;&#26495;</div>
+  </div>
+  <span class="badge">&#128994; &#31995;&#32113;&#36939;&#34892;&#20013;</span>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="showTab('overview')">&#128202; &#32317;&#35272;</button>
+  <button class="tab-btn" onclick="showTab('stores')">&#127978; &#38272;&#24066;&#35498;&#24773;</button>
+  <button class="tab-btn" onclick="showTab('replenish')">&#128203; &#35036;&#36008;&#24037;&#20316;&#28165;&#21934;</button>
+</div>
+
+<div class="content">
+<div class="refresh-bar">
+  <span class="ts">&#128336; &#26356;&#26032;&#26178;&#38291;: {{ now_str }}</span>
+  <button class="btn" onclick="location.reload()">&#128260; &#37325;&#26032;&#25972;&#29702;</button>
+</div>
+
+<!-- OVERVIEW -->
+<div id="tab-overview" class="tab-pane active">
+  <div class="kpi-grid">
+    <div class="kpi-card"><span class="l">&#32218;&#38272;&#24066;&#25976;</span><span class="v">{{ kpis.store_count }}</span></div>
+    <div class="kpi-card"><span class="l">SKU &#32218;&#25976;</span><span class="v">{{ "{:,}".format(kpis.sku_count) }}</span></div>
+    <div class="kpi-card accent"><span class="l">&#36817;30&#22825;&#29151;&#25910;</span><span class="v">{{ money_fmt(kpis.revenue_30d) }}</span></div>
+    <div class="kpi-card"><span class="l">&#36817;30&#22825;&#37559;&#21806;&#37327;</span><span class="v">{{ "{:,}".format(kpis.sales_30d) }}</span></div>
+    <div class="kpi-card"><span class="l">&#30446;&#21069;&#24211;&#23384;</span><span class="v">{{ "{:,}".format(kpis.total_inv) }}</span></div>
+    <div class="kpi-card danger"><span class="l">&#9888;&#65039; &#32570;&#36008;SKU</span><span class="v">{{ "{:,}".format(kpis.oos_sku) }}</span></div>
+    <div class="kpi-card warning"><span class="l">&#128230; &#38656;&#35036;&#36008;SKU</span><span class="v">{{ "{:,}".format(kpis.need_repl) }}</span></div>
+  </div>
+
+  <div class="chart-grid">
+    <div class="chart-card full"><h3>&#128200; &#36817; 90 &#22825;&#37559;&#21806;&#36235;&#21283;</h3><img src="data:image/png;base64,{{ charts.sales_trend }}"></div>
+    <div class="chart-card full"><h3>&#128176; &#36817; 90 &#22825;&#29151;&#25910;&#36235;&#21283; (&#33836;&#20803;)</h3><img src="data:image/png;base64,{{ charts.revenue_trend }}"></div>
+    <div class="chart-card"><h3>&#128202; &#21697;&#39006;&#24211;&#23384;&#20581;&#24247;</h3><img src="data:image/png;base64,{{ charts.stock_status }}"></div>
+    <div class="chart-card"><h3>&#129473; &#38272;&#24066;&#24211;&#23384;&#20463;&#27604;</h3><img src="data:image/png;base64,{{ charts.store_pie }}"></div>
+    <div class="chart-card"><h3>&#128230; &#24211;&#23384; vs 7&#22825;&#38656;&#27714;</h3><img src="data:image/png;base64,{{ charts.inv_vs_demand }}"></div>
+    <div class="chart-card"><h3>&#127942; Top 10 &#24314;&#35696;&#35036;&#36008;</h3><img src="data:image/png;base64,{{ charts.top_replenish }}"></div>
+  </div>
+
+  <h3 style="margin:20px 0 12px;color:#283593">&#127978; &#38272;&#24066;&#32317;&#35272;</h3>
+  <table class="data-table">
+    <thead><tr><th>ID</th><th>&#20013;&#25991;</th><th>&#26085;&#25991;</th><th>&#21312;&#22495;</th><th>SKU</th><th>&#24211;&#23384;</th><th>&#32570;&#36008;</th><th>&#38656;&#35036;</th></tr></thead>
+    <tbody>
+    {% for s in stores %}<tr>
+      <td><strong>{{ s.id }}</strong></td><td>{{ s.zh }}</td><td>{{ s.ja }}</td><td>{{ s.region }}</td>
+      <td>{{ "{:,}".format(s.sku) }}</td><td>{{ "{:,}".format(s.inv) }}</td>
+      <td class="{% if s.oos > 0 %}oos{% endif %}">{{ s.oos }}</td>
+      <td class="{% if s.repl > 0 %}low{% endif %}">{{ s.repl }}</td>
+    </tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- STORES -->
+<div id="tab-stores" class="tab-pane">
+  <div class="filter-bar">
+    <select id="storeFilter" onchange="filterStores()">
+      <option value="all">&#20840;&#37096;</option>
+      {% for s in stores %}<option value="{{ s.id }}">{{ s.zh }} ({{ s.id }})</option>{% endfor %}
+    </select>
+  </div>
+  <div class="store-grid" id="storeGrid">
+    {% for s in store_details %}<div class="store-card" data-store="{{ s.id }}">
+      <div class="sh"><h3>&#128205; {{ s.zh }} ({{ s.ja }})</h3><span class="tag">{{ s.region }}</span></div>
+      <div class="sb">
+        <div class="sr"><span class="lb">ID</span><span class="vl">{{ s.id }}</span></div>
+        <div class="sr"><span class="lb">SKU</span><span class="vl">{{ "{:,}".format(s.sku) }}</span></div>
+        <div class="sr"><span class="lb">&#24211;&#23384;</span><span class="vl">{{ "{:,}".format(s.inv) }}</span></div>
+        <div class="sr"><span class="lb">&#32570;&#36008;</span><span class="vl" {% if s.oos > 0 %}style="color:#c62828;font-weight:700"{% endif %}>{{ s.oos }}</span></div>
+        <div class="sr"><span class="lb">&#20302;&#24211;&#23384;</span><span class="vl" {% if s.low > 0 %}style="color:#f57f17;font-weight:700"{% endif %}>{{ s.low }}</span></div>
+        <div class="sr"><span class="lb">&#23433;&#20840;</span><span class="vl" style="color:#2e7d32">{{ s.ok }}</span></div>
+        <div class="sr"><span class="lb">&#38656;&#35036;&#36008;</span><span class="vl">{{ "{:,}".format(s.repl) }}</span></div>
+      </div>
+      {% if s.pie %}<div class="sc"><img src="data:image/png;base64,{{ s.pie }}"></div>{% endif %}
+    </div>{% endfor %}
+  </div>
+</div>
+
+<!-- REPLENISH -->
+<div id="tab-replenish" class="tab-pane">
+  <div class="filter-bar">
+    <select id="replStoreFilter" onchange="filterRepl()">
+      <option value="all">&#20840;&#37096;</option>
+      {% for s in stores %}<option value="{{ s.id }}">{{ s.zh }} ({{ s.id }})</option>{% endfor %}
+    </select>
+    <select id="replStatusFilter" onchange="filterRepl()">
+      <option value="all">&#20840;&#37096;&#29376;&#24907;</option>
+      <option value="OOS">&#9888;&#65039; &#32570;&#36008;&#39080;&#38570;</option>
+      <option value="LOW">&#128311; &#20302;&#24211;&#23384;</option>
+      <option value="OK">&#9989; &#23433;&#20840;</option>
+    </select>
+  </div>
+  <table class="data-table" id="replTable">
+    <thead><tr>
+      <th>&#38272;&#24066;</th><th>&#21830;&#21697;</th><th>&#21697;&#39006;</th><th>&#24211;&#23384;</th>
+      <th>&#38656;&#27714;</th><th>&#24050;&#19979;&#21934;</th><th>&#21487;&#25745;&#22825;&#25976;</th><th>&#29376;&#24907;</th><th>&#35036;&#36008;&#37327;</th>
+    </tr></thead>
+    <tbody>
+    {% for r in worklist %}<tr data-store="{{ r.store_id }}" data-status="{{ r.status }}">
+      <td><strong>{{ store_zh(r.store_id) }}</strong></td>
+      <td>{{ r.product_id }}</td><td>{{ r.category }}</td>
+      <td>{{ "{:,}".format(r.inv) }}</td><td>{{ "%.1f"|format(r.demand) }}</td>
+      <td>{{ r.ordered }}</td><td>{{ "%.1f"|format(r.days) }}</td>
+      <td class="{% if r.status == 'OOS' %}oos{% elif r.status == 'LOW' %}low{% else %}ok{% endif %}">{{ r.status }}</td>
+      <td><strong>{{ "{:,}".format(r.replenish) }}</strong></td>
+    </tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="footer">
+  <p>USI Smart Retail OS &middot; CLOUD | {{ now_str }}</p>
+  <p>Stores: Shibuya/Ginza/Shinjuku/Ueno/Ikebukuro (CSV) + Taipei Zhongxiao/Osaka Shinsaibashi (EDGE)</p>
+</div>
+</div>
+
+<script>
+function showTab(n){document.querySelectorAll('.tab-pane').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));document.getElementById('tab-'+n).classList.add('active');event.target.classList.add('active')}
+function filterStores(){const f=document.getElementById('storeFilter').value;document.querySelectorAll('.store-card').forEach(c=>{c.style.display=(f==='all'||c.dataset.store===f)?'':'none'})}
+function filterRepl(){const sf=document.getElementById('replStoreFilter').value;const st=document.getElementById('replStatusFilter').value;document.querySelectorAll('#replTable tbody tr').forEach(r=>{const m=(sf==='all'||r.dataset.store===sf)&&(st==='all'||r.dataset.status===st);r.style.display=m?'':'none'})}
+</script>
+</body>
+</html>

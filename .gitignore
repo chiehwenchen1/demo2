@@ -1,0 +1,43 @@
+# Build artifacts
+*.apk
+*.ap_
+*.dex
+*.class
+*.aar
+*.war
+*.jar
+gradle-wrapper.jar
+build/
+app/build/
+.gradle/
+local.properties
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Editor
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
+
+# Production database (do NOT commit)
+EDGE_DB.db
+*.sqbpro
+*.db.bak*
+
+# Test / debug scripts (temp)
+test_*.py
+check_*.py
+_check*.py
+_compare*.py
+_verify*.py
+
+# Generated reports
+reports/*.png
+reports/*.html
+
+# Model files
+*.pt

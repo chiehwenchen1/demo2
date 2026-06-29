@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>南投南崗店 - EDGE 庫存報表 (數據清理後)</title>
+<style>
+body{margin:0;font-family:"Microsoft JhengHei","Segoe UI",Arial,sans-serif;background:#f4f6f8;color:#1f2937}
+.header{background:linear-gradient(120deg,#0f172a,#1e3a8a);color:white;padding:24px 42px}
+.header h1{margin:0;font-size:28px}
+.header p{margin:6px 0 0;font-size:14px;color:#dbeafe}
+.container{padding:24px 42px 42px}
+.section-title{font-size:18px;font-weight:700;margin:24px 0 12px}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.card{background:white;border-radius:14px;padding:16px;box-shadow:0 4px 12px rgba(0,0,0,.06)}
+.card .l{color:#64748b;font-size:13px;margin-bottom:6px}
+.card .v{font-size:22px;font-weight:800}
+.card.orange .v{color:#ea580c}
+table{width:100%;border-collapse:collapse;background:white;border-radius:12px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.06)}
+th{background:#0f172a;color:white;padding:10px 12px;font-size:13px}
+td{padding:10px 12px;border-bottom:1px solid #e5e7eb;font-size:13px}
+.text-left{text-align:left}
+.text-right{text-align:right;font-family:Consolas, Monaco, monospace}
+.text-center{text-align:center}
+tr:nth-child(even) td{background:#f8fafc}
+.badge-low{background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:20px;font-size:12px;font-weight:700}
+.badge-ok{background:#dcfce7;color:#166534;padding:2px 8px;border-radius:20px;font-size:12px;font-weight:700}
+.insight{background:#fff7ed;border-left:6px solid #ea580c;padding:14px 18px;border-radius:10px;line-height:1.7;font-size:14px}
+.footer{color:#64748b;font-size:12px;margin-top:28px;text-align:center}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>🏪 EDGE 庫存管理報表 — 南投南崗店</h1>
+  <p>Nantou Nangang | 報表時間: 2026-04-28 13:29 (數據已修正)</p>
+</div>
+<div class="container">
+
+<div class="section-title">📊 KPI 摘要 (已移除 >5000 異常值)</div>
+<div class="kpi-grid">
+  <div class="card"><div class="l">產品數 (SKU)</div><div class="v">10</div></div>
+  <div class="card"><div class="l">總庫存量</div><div class="v">815</div></div>
+  <div class="card orange"><div class="l">修正後總銷售量</div><div class="v">7,315</div></div>
+  <div class="card"><div class="l">庫存健康度</div><div class="v">90%</div></div>
+</div>
+
+<div class="section-title">📋 各品類庫存一覽</div>
+<table>
+<thead><tr>
+  <th class="text-left">品名</th><th>類別</th><th>零售價</th><th>庫存</th><th>補貨點</th><th>庫存率</th><th>狀態</th>
+</tr></thead>
+<tbody>
+  <tr><td class="text-left">可樂 330ML</td><td class="text-center">cola</td><td class="text-right">$15</td><td class="text-right">217</td><td class="text-right">20</td><td class="text-right">217%</td><td class="text-center"><span class="badge-ok">正常</span></td></tr>
+  <tr><td class="text-left">雪碧 330ML</td><td class="text-center">sprite</td><td class="text-right">$15</td><td class="text-right">8</td><td class="text-right">60</td><td class="text-right">3%</td><td class="text-center"><span class="badge-low">偏低</span></td></tr>
+  <tr><td class="text-left">百事可樂 500ML</td><td class="text-center">pepsi</td><td class="text-right">$25</td><td class="text-right">43</td><td class="text-right">20</td><td class="text-right">14%</td><td class="text-center"><span class="badge-low">偏低</span></td></tr>
+  <tr><td class="text-left">可樂 920ML</td><td class="text-center">big_cola</td><td class="text-right">$35</td><td class="text-right">68</td><td class="text-right">20</td><td class="text-right">34%</td><td class="text-center"><span class="badge-ok">正常</span></td></tr>
+  <tr><td class="text-left">海尼根啤酒</td><td class="text-center">beer1</td><td class="text-right">$45</td><td class="text-right">76</td><td class="text-right">20</td><td class="text-right">25%</td><td class="text-center"><span class="badge-low">偏低</span></td></tr>
+  <tr><td class="text-left">百威啤酒 473ML</td><td class="text-center">beer2</td><td class="text-right">$55</td><td class="text-right">121</td><td class="text-right">40</td><td class="text-right">40%</td><td class="text-center"><span class="badge-ok">正常</span></td></tr>
+  <tr><td class="text-left">CALBEE JAGARICO</td><td class="text-center">cookie1</td><td class="text-right">$65</td><td class="text-right">66</td><td class="text-right">30</td><td class="text-right">44%</td><td class="text-center"><span class="badge-ok">正常</span></td></tr>
+  <tr><td class="text-left">卡迪那脆薯條</td><td class="text-center">cookie2</td><td class="text-right">$75</td><td class="text-right">59</td><td class="text-right">20</td><td class="text-right">59%</td><td class="text-center"><span class="badge-ok">正常</span></td></tr>
+  <tr><td class="text-left">丸米減鹽味噌湯</td><td class="text-center">soup</td><td class="text-right">$198</td><td class="text-right">96</td><td class="text-right">30</td><td class="text-right">64%</td><td class="text-center"><span class="badge-ok">正常</span></td></tr>
+  <tr><td class="text-left">HEINZ 番茄醬 3入</td><td class="text-center">tomato</td><td class="text-right">$329</td><td class="text-right">61</td><td class="text-right">20</td><td class="text-right">61%</td><td class="text-center"><span class="badge-ok">正常</span></td></tr>
+</tbody>
+</table>
+
+<div class="section-title">💡 處理摘要</div>
+<div class="insight">
+  系統已於 2026-04-28 執行數據清理：已刪除 <code>inventory_sync</code> 資料表中 <code>Physical_Count</code> 超過 5,000 的最近一筆紀錄。目前報表反映之銷售量已回到正常零售水平。
+</div>
+
+<div class="footer">
+  USI Smart Retail OS · 南投南崗店 · 資料清理完成
+</div>
+</div>
+</body>
+</html>

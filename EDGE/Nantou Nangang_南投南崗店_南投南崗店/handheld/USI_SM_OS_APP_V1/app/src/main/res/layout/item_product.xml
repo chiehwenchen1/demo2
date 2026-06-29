@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="10dp"
+    android:background="#FFFFFF"
+    android:gravity="center_vertical">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/productName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#1f2937" />
+        <TextView
+            android:id="@+id/productStock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="#64748b" />
+        <TextView
+            android:id="@+id/productPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="#059669" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/sellBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:text="卖åº"
+        android:backgroundTint="#ef4444"
+        android:textColor="#FFFFFF"
+        android:layout_marginEnd="8dp" />
+
+    <Button
+        android:id="@+id/restockBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:text="进è´§"
+        android:backgroundTint="#10b981"
+        android:textColor="#FFFFFF" />
+
+    <!-- Countdown overlay (hidden by default) -->
+    <LinearLayout
+        android:id="@+id/countdownLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:visibility="gone"
+        android:background="#FFF3E0"
+        android:padding="6dp">
+        <TextView
+            android:id="@+id/countdownText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="#E65100"
+            android:textStyle="bold"
+            android:layout_marginEnd="8dp" />
+        <Button
+            android:id="@+id/harvestBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="收è·"
+            android:backgroundTint="#FF9800"
+            android:textColor="#FFFFFF"
+            android:textSize="13sp" />
+    </LinearLayout>
+</LinearLayout>

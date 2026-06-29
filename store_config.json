@@ -1,0 +1,22 @@
+{
+  "stores": {
+    "USI_NG_LAB_5300": {
+      "name_zh": "台北忠孝店",
+      "name_en": "Taipei Zhongxiao Store",
+      "name_ja": "台北忠孝店",
+      "region": "North"
+    },
+    "USI_NG_LAB_9101": {
+      "name_zh": "台中一中店",
+      "name_en": "Taichung Yizhong Store",
+      "name_ja": "台中一中店",
+      "region": "Central"
+    },
+    "USI_NG_LAB_5501": {
+      "name_zh": "南投南崗店",
+      "name_en": "Nantou Nangang Store",
+      "name_ja": "南投南崗店",
+      "region": "Central"
+    }
+  }
+}

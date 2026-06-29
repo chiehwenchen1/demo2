@@ -1,0 +1,814 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>CLOUD 庫存管理銷售報表</title>
+<style>
+body{margin:0;font-family:"Microsoft JhengHei","Segoe UI",Arial,sans-serif;background:#f4f6f8;color:#1f2937}
+.header{background:linear-gradient(120deg,#0f172a,#1e3a8a);color:white;padding:24px 42px}
+.header h1{margin:0;font-size:28px}
+.header p{margin:6px 0 0;font-size:14px;color:#dbeafe}
+.container{padding:24px 42px 42px}
+.section-title{font-size:18px;font-weight:700;margin:24px 0 12px}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.card{background:white;border-radius:14px;padding:16px;box-shadow:0 4px 12px rgba(0,0,0,.06)}
+.card .l{color:#64748b;font-size:13px;margin-bottom:6px}
+.card .v{font-size:22px;font-weight:800}
+.card.red .v{color:#dc2626} .card.green .v{color:#059669} .card.blue .v{color:#2563eb} .card.orange .v{color:#ea580c}
+.chart{background:white;border-radius:14px;padding:14px;margin-bottom:16px;box-shadow:0 4px 12px rgba(0,0,0,.06)}
+.chart img{width:100%;display:block}
+.chart-title{font-size:14px;font-weight:700;margin-bottom:8px;color:#0f172a}
+table{width:100%;border-collapse:collapse;background:white;border-radius:12px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.06);margin-bottom:16px}
+th{background:#0f172a;color:white;padding:10px 12px;font-size:13px;text-align:left}
+td{padding:8px 12px;border-bottom:1px solid #e5e7eb;font-size:13px}
+tr:nth-child(even) td{background:#f8fafc}
+.badge-oos{display:inline-block;padding:2px 8px;border-radius:20px;background:#fee2e2;color:#b91c1c;font-size:12px;font-weight:700}
+.badge-low{background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:20px;font-size:12px;font-weight:700}
+.badge-ok{background:#dcfce7;color:#166534;padding:2px 8px;border-radius:20px;font-size:12px;font-weight:700}
+.footer{color:#64748b;font-size:12px;margin-top:28px;text-align:center}
+.scroll-table{max-height:420px;overflow-y:auto;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.06)}
+.scroll-table table{border-radius:0;box-shadow:none;margin-bottom:0}
+.scroll-table thead th{position:sticky;top:0;z-index:1}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>📊 CLOUD 庫存管理銷售報表</h1>
+  <p>最新資料：2026-05-05 | 系統產生時間：2026-05-05 09:54</p>
+</div>
+<div class="container">
+
+<div class="section-title">📊 KPI 摘要</div>
+<div class="kpi-grid">
+  <div class="card blue"><div class="l">🏪 門市數</div><div class="v">3</div></div>
+  <div class="card blue"><div class="l">📦 商品數 (SKU)</div><div class="v">63</div></div>
+  <div class="card green"><div class="l">💰 近30天營收</div><div class="v">$1,177,453</div></div>
+  <div class="card green"><div class="l">📦 近30天銷售量</div><div class="v">11,906</div></div>
+  <div class="card blue"><div class="l">📦 最新總庫存</div><div class="v">587,625</div></div>
+  <div class="card orange"><div class="l">⚠️ 需補貨 SKU</div><div class="v">3</div></div>
+  <div class="card red"><div class="l">❌ 缺貨風險 SKU</div><div class="v">1</div></div>
+  <div class="card green"><div class="l">✅ 安全庫存</div><div class="v">59</div></div>
+</div>
+
+<div class="section-title">🏪 門市摘要</div>
+<div class="scroll-table">
+<table>
+<thead><tr><th>門市</th><th>產品數</th><th>總庫存</th><th>缺貨風險</th><th>需補貨</th></tr></thead>
+<tbody>
+        <tr>
+            <td>Nantou Nangang</td>
+            <td style="text-align:right">31</td>
+            <td style="text-align:right">463,250</td>
+            <td style="text-align:right">0</td>
+            <td style="text-align:right">0</td>
+        </tr>
+        <tr>
+            <td>Osaka Shinsaibashi</td>
+            <td style="text-align:right">16</td>
+            <td style="text-align:right">59,428</td>
+            <td style="text-align:right">0</td>
+            <td style="text-align:right">1</td>
+        </tr>
+        <tr>
+            <td>Taipei Zhongxiao</td>
+            <td style="text-align:right">16</td>
+            <td style="text-align:right">64,947</td>
+            <td style="text-align:right">1</td>
+            <td style="text-align:right">2</td>
+        </tr>
+</tbody>
+</table>
+</div>
+
+<div class="section-title">📈 庫存儀表板</div>
+<div class="chart"><div class="chart-title">近 90 天銷售趨勢</div><img src="chart_sales_trend.png" alt="銷售趨勢"></div>
+<div class="chart"><div class="chart-title">各品類最新庫存狀態</div><img src="chart_stock_status.png" alt="庫存狀態"></div>
+<div class="chart"><div class="chart-title">目前庫存 vs 7天需求預測</div><img src="chart_inventory_vs_forecast.png" alt="庫存 vs 預測"></div>
+<div class="chart"><div class="chart-title">Top 10 建議補貨清單</div><img src="chart_restock_list.png" alt="建議補貨清單"></div>
+
+<div class="section-title">📋 各門市商品庫存一覽</div>
+<div class="scroll-table">
+<table>
+<thead><tr><th>門市</th><th>品名</th><th>類別</th><th>庫存</th><th>需求預測</th><th>可支撐天數</th><th>狀態</th></tr></thead>
+<tbody>
+        <tr>
+            <td>Taipei Zhongxiao</td>
+            <td>big_cola</td>
+            <td>big_cola</td>
+            <td style="text-align:right">68</td>
+            <td style="text-align:right">5</td>
+            <td style="text-align:right">11.7</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Taipei Zhongxiao</td>
+            <td>pepsi</td>
+            <td>pepsi</td>
+            <td style="text-align:right">43</td>
+            <td style="text-align:right">2</td>
+            <td style="text-align:right">16.5</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Taipei Zhongxiao</td>
+            <td>sprite</td>
+            <td>sprite</td>
+            <td style="text-align:right">8</td>
+            <td style="text-align:right">6</td>
+            <td style="text-align:right">1.2</td>
+            <td><span class="badge-oos">缺貨風險</span></td>
+        </tr>
+        <tr>
+            <td>Taipei Zhongxiao</td>
+            <td>cola</td>
+            <td>cola</td>
+            <td style="text-align:right">217</td>
+            <td style="text-align:right">3</td>
+            <td style="text-align:right">55.6</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Taipei Zhongxiao</td>
+            <td>sprite_can</td>
+            <td>sprite_can</td>
+            <td style="text-align:right">13,798</td>
+            <td style="text-align:right">4</td>
+            <td style="text-align:right">充足</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Taipei Zhongxiao</td>
+            <td>cola_can</td>
+            <td>cola_can</td>
+            <td style="text-align:right">22,147</td>
+            <td style="text-align:right">6</td>
+            <td style="text-align:right">充足</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Taipei Zhongxiao</td>
+            <td>imei</td>
+            <td>imei</td>
+            <td style="text-align:right">2,992</td>
+            <td style="text-align:right">5</td>
+            <td style="text-align:right">524.9</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Taipei Zhongxiao</td>
+            <td>coffee</td>
+            <td>coffee</td>
+            <td style="text-align:right">1,884</td>
+            <td style="text-align:right">8</td>
+            <td style="text-align:right">227.0</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Taipei Zhongxiao</td>
+            <td>noodle1</td>
+            <td>noodle1</td>
+            <td style="text-align:right">2,890</td>
+            <td style="text-align:right">3</td>
+            <td style="text-align:right">963.3</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Taipei Zhongxiao</td>
+            <td>noodle2</td>
+            <td>noodle2</td>
+            <td style="text-align:right">4,128</td>
+            <td style="text-align:right">5</td>
+            <td style="text-align:right">711.7</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Taipei Zhongxiao</td>
+            <td>noodle3</td>
+            <td>noodle3</td>
+            <td style="text-align:right">1,953</td>
+            <td style="text-align:right">8</td>
+            <td style="text-align:right">241.1</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Taipei Zhongxiao</td>
+            <td>noodle4</td>
+            <td>noodle4</td>
+            <td style="text-align:right">4,925</td>
+            <td style="text-align:right">7</td>
+            <td style="text-align:right">674.7</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Taipei Zhongxiao</td>
+            <td>croc</td>
+            <td>croc</td>
+            <td style="text-align:right">1,459</td>
+            <td style="text-align:right">3</td>
+            <td style="text-align:right">429.1</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Taipei Zhongxiao</td>
+            <td>dalli</td>
+            <td>dalli</td>
+            <td style="text-align:right">5,958</td>
+            <td style="text-align:right">2</td>
+            <td style="text-align:right">充足</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Taipei Zhongxiao</td>
+            <td>raid</td>
+            <td>raid</td>
+            <td style="text-align:right">983</td>
+            <td style="text-align:right">7</td>
+            <td style="text-align:right">131.1</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Taipei Zhongxiao</td>
+            <td>combat</td>
+            <td>combat</td>
+            <td style="text-align:right">1,494</td>
+            <td style="text-align:right">6</td>
+            <td style="text-align:right">244.9</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Osaka Shinsaibashi</td>
+            <td>big_cola</td>
+            <td>big_cola</td>
+            <td style="text-align:right">24</td>
+            <td style="text-align:right">1</td>
+            <td style="text-align:right">14.1</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Osaka Shinsaibashi</td>
+            <td>pepsi</td>
+            <td>pepsi</td>
+            <td style="text-align:right">137</td>
+            <td style="text-align:right">8</td>
+            <td style="text-align:right">17.1</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Osaka Shinsaibashi</td>
+            <td>sprite</td>
+            <td>sprite</td>
+            <td style="text-align:right">39</td>
+            <td style="text-align:right">8</td>
+            <td style="text-align:right">4.5</td>
+            <td><span class="badge-low">低庫存</span></td>
+        </tr>
+        <tr>
+            <td>Osaka Shinsaibashi</td>
+            <td>cola</td>
+            <td>cola</td>
+            <td style="text-align:right">112</td>
+            <td style="text-align:right">4</td>
+            <td style="text-align:right">24.9</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Osaka Shinsaibashi</td>
+            <td>sprite_can</td>
+            <td>sprite_can</td>
+            <td style="text-align:right">16,243</td>
+            <td style="text-align:right">7</td>
+            <td style="text-align:right">充足</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Osaka Shinsaibashi</td>
+            <td>cola_can</td>
+            <td>cola_can</td>
+            <td style="text-align:right">16,646</td>
+            <td style="text-align:right">8</td>
+            <td style="text-align:right">充足</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Osaka Shinsaibashi</td>
+            <td>imei</td>
+            <td>imei</td>
+            <td style="text-align:right">996</td>
+            <td style="text-align:right">11</td>
+            <td style="text-align:right">89.7</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Osaka Shinsaibashi</td>
+            <td>coffee</td>
+            <td>coffee</td>
+            <td style="text-align:right">1,412</td>
+            <td style="text-align:right">2</td>
+            <td style="text-align:right">588.3</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Osaka Shinsaibashi</td>
+            <td>noodle1</td>
+            <td>noodle1</td>
+            <td style="text-align:right">2,937</td>
+            <td style="text-align:right">3</td>
+            <td style="text-align:right">947.4</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Osaka Shinsaibashi</td>
+            <td>noodle2</td>
+            <td>noodle2</td>
+            <td style="text-align:right">5,613</td>
+            <td style="text-align:right">6</td>
+            <td style="text-align:right">935.5</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Osaka Shinsaibashi</td>
+            <td>noodle3</td>
+            <td>noodle3</td>
+            <td style="text-align:right">3,936</td>
+            <td style="text-align:right">10</td>
+            <td style="text-align:right">389.7</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Osaka Shinsaibashi</td>
+            <td>noodle4</td>
+            <td>noodle4</td>
+            <td style="text-align:right">2,439</td>
+            <td style="text-align:right">7</td>
+            <td style="text-align:right">316.8</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Osaka Shinsaibashi</td>
+            <td>croc</td>
+            <td>croc</td>
+            <td style="text-align:right">1,943</td>
+            <td style="text-align:right">4</td>
+            <td style="text-align:right">431.8</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Osaka Shinsaibashi</td>
+            <td>dalli</td>
+            <td>dalli</td>
+            <td style="text-align:right">2,977</td>
+            <td style="text-align:right">6</td>
+            <td style="text-align:right">458.0</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Osaka Shinsaibashi</td>
+            <td>raid</td>
+            <td>raid</td>
+            <td style="text-align:right">983</td>
+            <td style="text-align:right">3</td>
+            <td style="text-align:right">280.9</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Osaka Shinsaibashi</td>
+            <td>combat</td>
+            <td>combat</td>
+            <td style="text-align:right">2,991</td>
+            <td style="text-align:right">5</td>
+            <td style="text-align:right">586.5</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Nantou Nangang</td>
+            <td>big_cola</td>
+            <td>big_cola</td>
+            <td style="text-align:right">29,676</td>
+            <td style="text-align:right">7</td>
+            <td style="text-align:right">充足</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Nantou Nangang</td>
+            <td>pepsi</td>
+            <td>pepsi</td>
+            <td style="text-align:right">31,678</td>
+            <td style="text-align:right">8</td>
+            <td style="text-align:right">充足</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Nantou Nangang</td>
+            <td>sprite</td>
+            <td>sprite</td>
+            <td style="text-align:right">9,030</td>
+            <td style="text-align:right">6</td>
+            <td style="text-align:right">充足</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Nantou Nangang</td>
+            <td>cola</td>
+            <td>cola</td>
+            <td style="text-align:right">9,744</td>
+            <td style="text-align:right">9</td>
+            <td style="text-align:right">984.2</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Nantou Nangang</td>
+            <td>budweiser</td>
+            <td>budweiser</td>
+            <td style="text-align:right">29,608</td>
+            <td style="text-align:right">7</td>
+            <td style="text-align:right">充足</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Nantou Nangang</td>
+            <td>kirin_beer</td>
+            <td>kirin_beer</td>
+            <td style="text-align:right">15,269</td>
+            <td style="text-align:right">3</td>
+            <td style="text-align:right">充足</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Nantou Nangang</td>
+            <td>sprite_can</td>
+            <td>sprite_can</td>
+            <td style="text-align:right">30,407</td>
+            <td style="text-align:right">7</td>
+            <td style="text-align:right">充足</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Nantou Nangang</td>
+            <td>cola_can</td>
+            <td>cola_can</td>
+            <td style="text-align:right">41,457</td>
+            <td style="text-align:right">1</td>
+            <td style="text-align:right">充足</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Nantou Nangang</td>
+            <td>heineken</td>
+            <td>heineken</td>
+            <td style="text-align:right">30,347</td>
+            <td style="text-align:right">1</td>
+            <td style="text-align:right">充足</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Nantou Nangang</td>
+            <td>green_label</td>
+            <td>green_label</td>
+            <td style="text-align:right">33,167</td>
+            <td style="text-align:right">7</td>
+            <td style="text-align:right">充足</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Nantou Nangang</td>
+            <td>asahi</td>
+            <td>asahi</td>
+            <td style="text-align:right">25,095</td>
+            <td style="text-align:right">12</td>
+            <td style="text-align:right">充足</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Nantou Nangang</td>
+            <td>imei</td>
+            <td>imei</td>
+            <td style="text-align:right">12,640</td>
+            <td style="text-align:right">9</td>
+            <td style="text-align:right">充足</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Nantou Nangang</td>
+            <td>coffee</td>
+            <td>coffee</td>
+            <td style="text-align:right">9,408</td>
+            <td style="text-align:right">2</td>
+            <td style="text-align:right">充足</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Nantou Nangang</td>
+            <td>noodle1</td>
+            <td>noodle1</td>
+            <td style="text-align:right">9,873</td>
+            <td style="text-align:right">11</td>
+            <td style="text-align:right">897.5</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Nantou Nangang</td>
+            <td>noodle2</td>
+            <td>noodle2</td>
+            <td style="text-align:right">60</td>
+            <td style="text-align:right">3</td>
+            <td style="text-align:right">19.4</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Nantou Nangang</td>
+            <td>noodle3</td>
+            <td>noodle3</td>
+            <td style="text-align:right">9,537</td>
+            <td style="text-align:right">9</td>
+            <td style="text-align:right">充足</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Nantou Nangang</td>
+            <td>noodle4</td>
+            <td>noodle4</td>
+            <td style="text-align:right">4,040</td>
+            <td style="text-align:right">7</td>
+            <td style="text-align:right">577.1</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Nantou Nangang</td>
+            <td>custard</td>
+            <td>custard</td>
+            <td style="text-align:right">11,618</td>
+            <td style="text-align:right">1</td>
+            <td style="text-align:right">充足</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Nantou Nangang</td>
+            <td>crunchoco</td>
+            <td>crunchoco</td>
+            <td style="text-align:right">6,030</td>
+            <td style="text-align:right">7</td>
+            <td style="text-align:right">826.0</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Nantou Nangang</td>
+            <td>ovaltine</td>
+            <td>ovaltine</td>
+            <td style="text-align:right">5,785</td>
+            <td style="text-align:right">6</td>
+            <td style="text-align:right">948.4</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Nantou Nangang</td>
+            <td>potato</td>
+            <td>potato</td>
+            <td style="text-align:right">5,616</td>
+            <td style="text-align:right">4</td>
+            <td style="text-align:right">充足</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Nantou Nangang</td>
+            <td>sweet_potato</td>
+            <td>sweet_potato</td>
+            <td style="text-align:right">5,688</td>
+            <td style="text-align:right">2</td>
+            <td style="text-align:right">充足</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Nantou Nangang</td>
+            <td>kido</td>
+            <td>kido</td>
+            <td style="text-align:right">12,993</td>
+            <td style="text-align:right">7</td>
+            <td style="text-align:right">充足</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Nantou Nangang</td>
+            <td>big_potato</td>
+            <td>big_potato</td>
+            <td style="text-align:right">16,055</td>
+            <td style="text-align:right">5</td>
+            <td style="text-align:right">充足</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Nantou Nangang</td>
+            <td>croc</td>
+            <td>croc</td>
+            <td style="text-align:right">8,192</td>
+            <td style="text-align:right">11</td>
+            <td style="text-align:right">706.2</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Nantou Nangang</td>
+            <td>dalli</td>
+            <td>dalli</td>
+            <td style="text-align:right">11,721</td>
+            <td style="text-align:right">2</td>
+            <td style="text-align:right">充足</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Nantou Nangang</td>
+            <td>raid</td>
+            <td>raid</td>
+            <td style="text-align:right">4,816</td>
+            <td style="text-align:right">2</td>
+            <td style="text-align:right">充足</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Nantou Nangang</td>
+            <td>combat</td>
+            <td>combat</td>
+            <td style="text-align:right">8,128</td>
+            <td style="text-align:right">7</td>
+            <td style="text-align:right">充足</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Nantou Nangang</td>
+            <td>toilet_paper</td>
+            <td>toilet_paper</td>
+            <td style="text-align:right">10,604</td>
+            <td style="text-align:right">7</td>
+            <td style="text-align:right">充足</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Nantou Nangang</td>
+            <td>miso_soup</td>
+            <td>miso_soup</td>
+            <td style="text-align:right">14,985</td>
+            <td style="text-align:right">9</td>
+            <td style="text-align:right">充足</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Nantou Nangang</td>
+            <td>heinz_ketchup</td>
+            <td>heinz_ketchup</td>
+            <td style="text-align:right">9,983</td>
+            <td style="text-align:right">6</td>
+            <td style="text-align:right">充足</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+</tbody>
+</table>
+</div>
+
+<div class="section-title">📋 建議補貨清單（Top 15）</div>
+<div class="scroll-table">
+<table>
+<thead><tr><th>門市</th><th>商品</th><th>品類</th><th>目前庫存</th><th>當日銷售量</th><th>建議補貨量</th><th>狀態</th></tr></thead>
+<tbody>
+        <tr>
+            <td>Osaka Shinsaibashi</td>
+            <td>osaka sprite</td>
+            <td>sprite</td>
+            <td style="text-align:right">39</td>
+            <td style="text-align:right">5</td>
+            <td style="text-align:right">81</td>
+            <td><span class="badge-low">低庫存</span></td>
+        </tr>
+        <tr>
+            <td>Taipei Zhongxiao</td>
+            <td>nantou sprite</td>
+            <td>sprite</td>
+            <td style="text-align:right">8</td>
+            <td style="text-align:right">8</td>
+            <td style="text-align:right">18</td>
+            <td><span class="badge-oos">缺貨風險</span></td>
+        </tr>
+        <tr>
+            <td>Taipei Zhongxiao</td>
+            <td>nantou big_cola</td>
+            <td>big_cola</td>
+            <td style="text-align:right">68</td>
+            <td style="text-align:right">7</td>
+            <td style="text-align:right">13</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Osaka Shinsaibashi</td>
+            <td>osaka big_cola</td>
+            <td>big_cola</td>
+            <td style="text-align:right">24</td>
+            <td style="text-align:right">2</td>
+            <td style="text-align:right">0</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Taipei Zhongxiao</td>
+            <td>nantou pepsi</td>
+            <td>pepsi</td>
+            <td style="text-align:right">43</td>
+            <td style="text-align:right">5</td>
+            <td style="text-align:right">0</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Osaka Shinsaibashi</td>
+            <td>osaka pepsi</td>
+            <td>pepsi</td>
+            <td style="text-align:right">137</td>
+            <td style="text-align:right">3</td>
+            <td style="text-align:right">0</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Nantou Nangang</td>
+            <td>阿Q桶麵韓式泡菜</td>
+            <td>noodle2</td>
+            <td style="text-align:right">60</td>
+            <td style="text-align:right">3</td>
+            <td style="text-align:right">0</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Osaka Shinsaibashi</td>
+            <td>osaka cola</td>
+            <td>cola</td>
+            <td style="text-align:right">112</td>
+            <td style="text-align:right">2</td>
+            <td style="text-align:right">0</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Taipei Zhongxiao</td>
+            <td>nantou cola</td>
+            <td>cola</td>
+            <td style="text-align:right">217</td>
+            <td style="text-align:right">3</td>
+            <td style="text-align:right">0</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Osaka Shinsaibashi</td>
+            <td>osaka shinsaibashi_7595_imei</td>
+            <td>imei</td>
+            <td style="text-align:right">996</td>
+            <td style="text-align:right">9</td>
+            <td style="text-align:right">0</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Taipei Zhongxiao</td>
+            <td>nantou nangang_7877_raid</td>
+            <td>raid</td>
+            <td style="text-align:right">983</td>
+            <td style="text-align:right">7</td>
+            <td style="text-align:right">0</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Taipei Zhongxiao</td>
+            <td>nantou nangang_2265_coffee</td>
+            <td>coffee</td>
+            <td style="text-align:right">1,884</td>
+            <td style="text-align:right">3</td>
+            <td style="text-align:right">0</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Taipei Zhongxiao</td>
+            <td>nantou nangang_8683_noodle3</td>
+            <td>noodle3</td>
+            <td style="text-align:right">1,953</td>
+            <td style="text-align:right">6</td>
+            <td style="text-align:right">0</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Taipei Zhongxiao</td>
+            <td>nantou nangang_8065_combat</td>
+            <td>combat</td>
+            <td style="text-align:right">1,494</td>
+            <td style="text-align:right">6</td>
+            <td style="text-align:right">0</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>Osaka Shinsaibashi</td>
+            <td>osaka shinsaibashi_2803_raid</td>
+            <td>raid</td>
+            <td style="text-align:right">983</td>
+            <td style="text-align:right">1</td>
+            <td style="text-align:right">0</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+</tbody>
+</table>
+</div>
+
+<div class="footer">
+  USI Smart Retail OS · CLOUD 端報表
+</div>
+</div>
+</body>
+</html>

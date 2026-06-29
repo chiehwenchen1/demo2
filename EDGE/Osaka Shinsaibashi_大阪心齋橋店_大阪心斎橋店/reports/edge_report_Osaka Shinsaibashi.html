@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>大阪心齋橋店 - EDGE 庫存報表</title>
+<style>
+body{margin:0;font-family:"Microsoft JhengHei","Segoe UI",Arial,sans-serif;background:#f4f6f8;color:#1f2937}
+.header{background:linear-gradient(120deg,#0f172a,#1e3a8a);color:white;padding:24px 42px}
+.header h1{margin:0;font-size:28px}
+.header p{margin:6px 0 0;font-size:14px;color:#dbeafe}
+.container{padding:24px 42px 42px}
+.section-title{font-size:18px;font-weight:700;margin:24px 0 12px}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.card{background:white;border-radius:14px;padding:16px;box-shadow:0 4px 12px rgba(0,0,0,.06)}
+.card .l{color:#64748b;font-size:13px;margin-bottom:6px}
+.card .v{font-size:22px;font-weight:800}
+.card.red .v{color:#dc2626} .card.green .v{color:#059669} .card.blue .v{color:#2563eb} .card.orange .v{color:#ea580c}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.chart{background:white;border-radius:14px;padding:14px;box-shadow:0 4px 12px rgba(0,0,0,.06)}
+.chart img{width:100%;display:block}
+table{width:100%;border-collapse:collapse;background:white;border-radius:12px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.06)}
+th{background:#0f172a;color:white;padding:10px 12px;font-size:13px;text-align:left}
+td{padding:8px 12px;border-bottom:1px solid #e5e7eb;font-size:13px}
+tr:nth-child(even) td{background:#f8fafc}
+.badge-oos{display:inline-block;padding:2px 8px;border-radius:20px;background:#fee2e2;color:#b91c1c;font-size:12px;font-weight:700}
+.badge-low{background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:20px;font-size:12px;font-weight:700}
+.badge-ok{background:#dcfce7;color:#166534;padding:2px 8px;border-radius:20px;font-size:12px;font-weight:700}
+.insight{background:#ecfeff;border-left:6px solid #0891b2;padding:14px 18px;border-radius:10px;line-height:1.7;font-size:14px}
+.footer{color:#64748b;font-size:12px;margin-top:28px;text-align:center}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>🏪 EDGE 庫存管理報表 — 大阪心齋橋店</h1>
+  <p>Osaka Shinsaibashi | 區域: Osaka | 報表時間: 2026-04-27 15:04</p>
+</div>
+<div class="container">
+
+<div class="section-title">📊 KPI 摘要</div>
+<div class="kpi-grid">
+  <div class="card blue"><div class="l">產品數 (SKU)</div><div class="v">10</div></div>
+  <div class="card green"><div class="l">總庫存量</div><div class="v">1,016</div></div>
+  <div class="card"><div class="l">總庫存價值</div><div class="v">$108,872</div></div>
+  <div class="card orange"><div class="l">近30天銷貨金額</div><div class="v">$251,436</div></div>
+  <div class="card green"><div class="l">✅ 正常庫存</div><div class="v">10</div></div>
+  <div class="card" style="border:2px solid #ff9800"><div class="l">⚠️ 低庫存</div><div class="v">0</div></div>
+  <div class="card red"><div class="l">❌ 缺貨</div><div class="v">0</div></div>
+  <div class="card"><div class="l">近30天銷售量</div><div class="v">2,684</div></div>
+</div>
+
+<div class="section-title">📋 各品類庫存一覽</div>
+<table>
+<thead><tr>
+  <th>品名</th><th>類別</th><th>零售價</th><th>庫存</th><th>最大容量</th><th>補貨點</th><th>庫存率</th><th>狀態</th>
+</tr></thead>
+<tbody>
+        <tr>
+            <td>可樂 330ML</td>
+            <td>cola</td>
+            <td style="text-align:right">$15</td>
+            <td style="text-align:right">112</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">40</td>
+            <td style="text-align:right">56%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>雪碧 330ML</td>
+            <td>sprite</td>
+            <td style="text-align:right">$15</td>
+            <td style="text-align:right">39</td>
+            <td style="text-align:right">150</td>
+            <td style="text-align:right">10</td>
+            <td style="text-align:right">26%</td>
+            <td><span class="badge-low">偏低</span></td>
+        </tr>
+        <tr>
+            <td>百事可樂 500ML</td>
+            <td>pepsi</td>
+            <td style="text-align:right">$25</td>
+            <td style="text-align:right">137</td>
+            <td style="text-align:right">300</td>
+            <td style="text-align:right">60</td>
+            <td style="text-align:right">46%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>可樂 920ML</td>
+            <td>big_cola</td>
+            <td style="text-align:right">$35</td>
+            <td style="text-align:right">24</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">10</td>
+            <td style="text-align:right">12%</td>
+            <td><span class="badge-low">偏低</span></td>
+        </tr>
+        <tr>
+            <td>海尼根啤酒</td>
+            <td>beer1</td>
+            <td style="text-align:right">$45</td>
+            <td style="text-align:right">66</td>
+            <td style="text-align:right">300</td>
+            <td style="text-align:right">20</td>
+            <td style="text-align:right">22%</td>
+            <td><span class="badge-low">偏低</span></td>
+        </tr>
+        <tr>
+            <td>百威啤酒 473ML</td>
+            <td>beer2</td>
+            <td style="text-align:right">$55</td>
+            <td style="text-align:right">124</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">40</td>
+            <td style="text-align:right">62%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>CALBEE JAGARICO</td>
+            <td>cookie1</td>
+            <td style="text-align:right">$65</td>
+            <td style="text-align:right">127</td>
+            <td style="text-align:right">300</td>
+            <td style="text-align:right">60</td>
+            <td style="text-align:right">42%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>卡迪那脆薯條</td>
+            <td>cookie2</td>
+            <td style="text-align:right">$75</td>
+            <td style="text-align:right">91</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">40</td>
+            <td style="text-align:right">46%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>丸米減鹽味噌湯</td>
+            <td>soup</td>
+            <td style="text-align:right">$198</td>
+            <td style="text-align:right">152</td>
+            <td style="text-align:right">300</td>
+            <td style="text-align:right">60</td>
+            <td style="text-align:right">51%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr>
+        <tr>
+            <td>HEINZ 番茄醬 3入</td>
+            <td>tomato</td>
+            <td style="text-align:right">$329</td>
+            <td style="text-align:right">144</td>
+            <td style="text-align:right">200</td>
+            <td style="text-align:right">40</td>
+            <td style="text-align:right">72%</td>
+            <td><span class="badge-ok">正常</span></td>
+        </tr></tbody>
+</table>
+<div class="section-title">📈 庫存儀表板</div>
+<div class="chart">
+  <img src="edge_dashboard_Osaka Shinsaibashi.png" alt="庫存儀表板">
+</div>
+<div class="section-title">💡 庫存洞察</div>
+<div class="insight">
+  <strong>庫存健康度：</strong>10 項產品中，10 項庫存正常，
+  0 項偏低，0 項缺貨。目前庫存狀況良好。
+  近30天銷售（CLOUD） 2684 件，銷貨金額 $251,436。
+</div>
+
+<div class="section-title">📄 交易記錄摘要（近30天）</div>
+<table>
+<thead><tr>
+  <th>類型</th><th>來源</th><th>筆數</th><th>數量</th><th>金額</th>
+</tr></thead>
+<tbody>
+  <tr><td>📤 銷貨</td><td>CLOUD</td><td>320</td><td>2,684</td><td>$251,436</td></tr>
+  <tr><td>📥 進貨</td><td>EDGE</td><td>155</td><td>8,225</td><td>$418,541</td></tr>
+  <tr><td>🔄 補貨</td><td>EDGE</td><td>0</td><td>0</td><td>-</td></tr>
+</tbody>
+</table>
+
+<div class="footer">
+  USI Smart Retail OS · EDGE 端報表 · 2026-04-27 15:04
+</div>
+</div>
+</body>
+</html>
