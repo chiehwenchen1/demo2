@@ -472,7 +472,7 @@ def _build_page():
         elif sk < ro:
             badge_cls = "bo bo-re"; badge_txt = "LOS"
         else:
-            badge_cls = "bo bo-ok"; badge_txt = "\u6b63\u5e38"
+            badge_cls = "bo bo-ok"; badge_txt = "OK"
         trs += f"""<tr data-pid="{pid}" data-stock="{sk}" data-reorder="{ro}"><td>{pn}</td><td>{ct}</td><td style="text-align:right">${rp:,.0f}</td><td style="text-align:right" class="ed-stock" contenteditable="true">{sk:,}</td><td style="text-align:right" class="ed-capacity" contenteditable="true">{mc:,}</td><td style="text-align:right" class="ed-reorder" contenteditable="true">{ro:,}</td><td style="text-align:right" class="col-rate">{rt}%</td><td><span class="{badge_cls} col-badge">{badge_txt}</span></td><td style="text-align:center"><input type="number" min="0" value="0" class="rq" data-pid="{pid}" style="width:60px;text-align:center;border:2px solid #d1d5db;border-radius:4px;padding:4px"></td><td style="text-align:center"><button class="btn-purchase" data-pid="{pid}" style="padding:4px 10px;margin:2px;background:#4CAF50;color:white;border:none;border-radius:4px;cursor:pointer;font-size:13px">🔁Order</button></td><td style="text-align:center;width:64px"><span class="pt-col">--:--:--</span></td><td style="text-align:center;width:64px" class="hidden-col"><span class="rt-col">--:--:--</span></td><td style="text-align:center" class="hidden-col"><button class="btn-rec" disabled data-pid="{pid}">📥 Receive</button></td></tr>"""
 
     html = f"""<!doctype html>
@@ -555,9 +555,9 @@ tr:nth-child(even) td{{background:#f8fafc}}
 <tbody id="tb">{trs}</tbody>
 </table>
 </div>
-<div class="st">📈 📈 Stock Dashboard</div>
+<div class="st">📈 Stock Dashboard</div>
 <div class="cht"><img id="ci" src="/reports/edge_slide_{STORE_ID}.png" alt="Dashboard" onerror="this.style.display='none'"></div>
-<div class="st">📦 📦 Daily Sales by Item</div>
+<div class="st">📦 Daily Sales by Item</div>
 <div style="margin-bottom:10px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
   <label style="font-weight:700;font-size:14px">Item:</label>
   <select id="sales-product-select" style="padding:6px 10px;font-size:14px;border:2px solid #000;border-radius:6px;min-width:250px">
