@@ -811,8 +811,8 @@ function renderSales(productId){{
   var keys=Object.keys(dateMap).sort();
   var labels=keys,values=keys.map(function(k){{return dateMap[k]}});
   var titleTxt="";
-  if(productId==="__all__"){{titleTxt="\u5168\u90e8\u54c1\u9805 \u2014 \u6bcf\u65e5\u92b7\u552e\u7e3d\u91cf";}}
-  else{{var nm=productMap[productId]||productId;titleTxt=nm+" \u2014 \u6bcf\u65e5\u92b7\u552e\u8da8\u52e2";}}
+  if(productId==="__all__"){{titleTxt="All items \u2014 Daily Total";}}
+  else{{var nm=productMap[productId]||productId;titleTxt=nm+" \u2014 Daily Sales Trend";}}
   var canvas=document.getElementById("stc-chart");
   var dpr=window.devicePixelRatio||1;
   var rect=canvas.parentElement.getBoundingClientRect();
@@ -827,7 +827,7 @@ function renderSales(productId){{
   var pad={{top:50,bottom:50,left:60,right:30}};
   var cw=w-pad.left-pad.right,ch=h-pad.top-pad.bottom;
   if(!values.length||values.every(function(v){{return v===0}})){{
-    ctx.fillStyle="#64748b";ctx.font="16px Microsoft JhengHei,sans-serif";ctx.textAlign="center";ctx.fillText("\u7121\u92b7\u552e\u6578\u64da",w/2,h/2);return;
+    ctx.fillStyle="#64748b";ctx.font="16px Microsoft JhengHei,sans-serif";ctx.textAlign="center";ctx.fillText("No sales data",w/2,h/2);return;
   }}
   var maxVal=Math.max.apply(null,values);
   // draw title
