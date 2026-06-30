@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 generate_edge_slide_html.py - EDGE Inventory Server
@@ -548,7 +548,7 @@ tr:nth-child(even) td{{background:#f8fafc}}
   <span style="color:#64748b;font-size:13px">💡 Press Enter or click away to save stock edit</span>
   <button onclick="toggleRecv()" class="rec-toggle" id="rec-toggle-btn">👁 Show Receive</button>
 </div>
-<div class="st">📋 📋 Inventory by Category</div>
+<div class="st">📋 Inventory by Category</div>
 <div class="stbl">
 <table>
 <thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Stock(edit)</th><th>Max Cap</th><th>Reorder</th><th>Rate</th><th>Status</th><th>Order</th><th>Order</th><th colspan="2">Arrival</th><th class="hidden-col">Receive Time</th></tr></thead>
