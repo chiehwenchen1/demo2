@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-generate_edge_slide_html.py - EDGE 端庫存管理 Server
-提供：
-  - 網頁報表（含可編輯庫存表格 + 叫貨/收貨 + 每日銷售明細）
-  - REST API 讀寫 EDGE_DB.db
-用法：python generate_edge_slide_html.py
-      瀏覽器打開 http://localhost:5000
-按 Ctrl+C 停止
+generate_edge_slide_html.py - EDGE Inventory Server
+Provides:
+  - Web report (editable stock table + order/receive + daily sales)
+  - REST API for EDGE_DB.db
+Usage:python generate_edge_slide_html.py
+      Open browser at http://localhost:5000
+Press Ctrl+C to stop
 """
 import os, sys, sqlite3, json, io, csv
 from datetime import datetime, date, timedelta
@@ -32,7 +32,7 @@ if not os.path.exists(EDGE_DB):
 
 STORE_ID = os.path.basename(SCRIPT_DIR).split("_")[0]
 REGION = "Central" if "南投" in os.path.basename(SCRIPT_DIR) else "Osaka"
-store_zh = "南投南崗店" if "南投" in SCRIPT_DIR else "大阪心齋橋店"
+store_zh = "Nantou Nangang" if "南投" in SCRIPT_DIR else "Osaka Shinsaibashi"
 report_dir = os.path.join(SCRIPT_DIR, "reports")
 os.makedirs(report_dir, exist_ok=True)
 
@@ -44,7 +44,7 @@ app.json.ensure_ascii = False
 
 # Server-side purchase state
 _purchase_state = {}
-# Server-side suggested purchase qty (跨裝置叫貨量同步)
+# Server-side suggested purchase qty (Cross-device Order Sync)
 _suggested_purchase_qty = {}
 
 # ─── CSV Category Mapping (比照 handheld_api_server.py) ───
@@ -63,7 +63,7 @@ def load_category_map():
     return cat_map
 
 CSV_CAT_MAP = load_category_map()
-print(f"  [CSV] 載入 {len(CSV_CAT_MAP)} 筆 category 對照")
+print(f"  [CSV] loaded {len(CSV_CAT_MAP)} category mappings")
 
 
 def _resolve_category(row):
@@ -358,15 +358,15 @@ def _generate_chart():
 
     if has_mpl and daily is not None and not daily.empty:
         fig = plt.figure(figsize=(18, 16))
-        fig.suptitle(f"EDGE 庫存管理儀表板 - {store_zh}", fontsize=20, weight="bold", y=0.98)
+        fig.suptitle(f"EDGE Inventory Dashboard - {store_zh}", fontsize=20, weight="bold", y=0.98)
         gs = fig.add_gridspec(3, 3, hspace=0.30, wspace=0.20, left=0.08, right=0.97, top=0.94, bottom=0.04)
         ax1 = fig.add_subplot(gs[0, :])
         sorted_df = products.sort_values("store_stock", ascending=True)
         stocks = sorted_df["store_stock"].fillna(0).tolist()
         colors = ["#ef4444" if s <= 0 else "#f59e0b" if s < (sorted_df.iloc[i]["reorder_level"] or 20) else "#10b981" for i, s in enumerate(stocks)]
         ax1.barh(sorted_df["product_name"].tolist(), stocks, color=colors, height=0.7)
-        ax1.set_title(f"目前庫存數量 ({total_sku}項)", fontsize=16, weight="bold")
-        ax1.set_xlabel("件", fontsize=13)
+        ax1.set_title(f"Current Stock Levels ({total_sku}items)", fontsize=16, weight="bold")
+        ax1.set_xlabel("units", fontsize=13)
         ax1.grid(True, axis="x", alpha=0.3)
         ax1.tick_params(axis="y", labelsize=11)
         ax1.margins(y=0.01)
@@ -374,22 +374,22 @@ def _generate_chart():
         products["value"] = products["store_stock"].fillna(0) * products["retail_price"].fillna(0)
         top10 = products.nlargest(10, "value")
         ax2.barh(top10["product_name"], top10["value"] / 10000, color="#3b82f6", height=0.7)
-        ax2.set_title("庫存價值 Top 10 (萬元)", fontsize=16, weight="bold")
-        ax2.set_xlabel("萬元", fontsize=13)
+        ax2.set_title("Top 10 Stock Value (NT$10K)", fontsize=16, weight="bold")
+        ax2.set_xlabel("NT$10K", fontsize=13)
         ax2.grid(True, axis="x", alpha=0.3)
         ax2.margins(y=0.08)
         ax3 = fig.add_subplot(gs[1, 1])
         ok_count = total_sku - low_stock - oos
         labels, sizes, pie_colors = [], [], []
         if ok_count > 0:
-            labels.append(f"正常 ({ok_count})"); sizes.append(ok_count); pie_colors.append("#10b981")
+            labels.append(f"OK ({ok_count})"); sizes.append(ok_count); pie_colors.append("#10b981")
         if low_stock > 0:
-            labels.append(f"低庫存 ({low_stock})"); sizes.append(low_stock); pie_colors.append("#f59e0b")
+            labels.append(f"Low Stock ({low_stock})"); sizes.append(low_stock); pie_colors.append("#f59e0b")
         if oos > 0:
-            labels.append(f"缺貨 ({oos})"); sizes.append(oos); pie_colors.append("#ef4444")
+            labels.append(f"Out of Stock ({oos})"); sizes.append(oos); pie_colors.append("#ef4444")
         if sizes:
             ax3.pie(sizes, labels=labels, colors=pie_colors, autopct="%1.0f%%", startangle=90, textprops={"fontsize": 15, "weight": "bold"})
-        ax3.set_title("庫存健康度", fontsize=16, weight="bold")
+        ax3.set_title("Stock Health", fontsize=16, weight="bold")
         ax4 = fig.add_subplot(gs[2, :])
         y_vals = daily["units_sold"].values
         if len(y_vals) > 0:
@@ -397,8 +397,8 @@ def _generate_chart():
             y_capped = np.minimum(y_vals, cap)
             ax4.plot(daily["date"], y_capped, color="#3b82f6", linewidth=2.5)
             ax4.fill_between(daily["date"], y_capped, alpha=0.15, color="#3b82f6")
-        ax4.set_title("每日銷售趨勢", fontsize=16, weight="bold")
-        ax4.set_ylabel("銷售量", fontsize=13)
+        ax4.set_title("Daily Sales Trend", fontsize=16, weight="bold")
+        ax4.set_ylabel("Units Sold", fontsize=13)
         ax4.grid(True, alpha=0.3)
         ax4.tick_params(axis="x", rotation=20, labelsize=11)
         png_path = os.path.join(report_dir, f"edge_slide_{STORE_ID}.png")
@@ -473,14 +473,14 @@ def _build_page():
             badge_cls = "bo bo-re"; badge_txt = "LOS"
         else:
             badge_cls = "bo bo-ok"; badge_txt = "\u6b63\u5e38"
-        trs += f"""<tr data-pid="{pid}" data-stock="{sk}" data-reorder="{ro}"><td>{pn}</td><td>{ct}</td><td style="text-align:right">${rp:,.0f}</td><td style="text-align:right" class="ed-stock" contenteditable="true">{sk:,}</td><td style="text-align:right" class="ed-capacity" contenteditable="true">{mc:,}</td><td style="text-align:right" class="ed-reorder" contenteditable="true">{ro:,}</td><td style="text-align:right" class="col-rate">{rt}%</td><td><span class="{badge_cls} col-badge">{badge_txt}</span></td><td style="text-align:center"><input type="number" min="0" value="0" class="rq" data-pid="{pid}" style="width:60px;text-align:center;border:2px solid #d1d5db;border-radius:4px;padding:4px"></td><td style="text-align:center"><button class="btn-purchase" data-pid="{pid}" style="padding:4px 10px;margin:2px;background:#4CAF50;color:white;border:none;border-radius:4px;cursor:pointer;font-size:13px">🔁叫貨</button></td><td style="text-align:center;width:64px"><span class="pt-col">--:--:--</span></td><td style="text-align:center;width:64px" class="hidden-col"><span class="rt-col">--:--:--</span></td><td style="text-align:center" class="hidden-col"><button class="btn-rec" disabled data-pid="{pid}">📥 收貨</button></td></tr>"""
+        trs += f"""<tr data-pid="{pid}" data-stock="{sk}" data-reorder="{ro}"><td>{pn}</td><td>{ct}</td><td style="text-align:right">${rp:,.0f}</td><td style="text-align:right" class="ed-stock" contenteditable="true">{sk:,}</td><td style="text-align:right" class="ed-capacity" contenteditable="true">{mc:,}</td><td style="text-align:right" class="ed-reorder" contenteditable="true">{ro:,}</td><td style="text-align:right" class="col-rate">{rt}%</td><td><span class="{badge_cls} col-badge">{badge_txt}</span></td><td style="text-align:center"><input type="number" min="0" value="0" class="rq" data-pid="{pid}" style="width:60px;text-align:center;border:2px solid #d1d5db;border-radius:4px;padding:4px"></td><td style="text-align:center"><button class="btn-purchase" data-pid="{pid}" style="padding:4px 10px;margin:2px;background:#4CAF50;color:white;border:none;border-radius:4px;cursor:pointer;font-size:13px">🔁Order</button></td><td style="text-align:center;width:64px"><span class="pt-col">--:--:--</span></td><td style="text-align:center;width:64px" class="hidden-col"><span class="rt-col">--:--:--</span></td><td style="text-align:center" class="hidden-col"><button class="btn-rec" disabled data-pid="{pid}">📥 Receive</button></td></tr>"""
 
     html = f"""<!doctype html>
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{store_zh} - EDGE 庫存管理</title>
+<title>{store_zh} - EDGE Inventory</title>
 <style>
 *{{box-sizing:border-box}}
 body{{margin:0;font-family:"Microsoft JhengHei","Segoe UI",Arial,sans-serif;background:#f4f6f8;color:#1f2937}}
@@ -525,52 +525,52 @@ tr:nth-child(even) td{{background:#f8fafc}}
 <body>
 <div id="t" class="toast"></div>
 <div class="header">
-  <h1>🏪 EDGE 庫存管理 - {store_zh}</h1>
-  <p>{STORE_ID} | 區域: {REGION} | 更新時間: {now_str}</p>
+  <h1>🏪 EDGE Inventory - {store_zh}</h1>
+  <p>{STORE_ID} | Region: {REGION} | Updated: {now_str}</p>
 
 </div>
 <div class="container">
-<div class="st">📊 KPI 摘要</div>
+<div class="st">📊 KPI Summary</div>
 <div class="kg">
-  <div class="card cb"><div class="l">產品數 (SKU)</div><div class="v">{total_sku}</div></div>
-  <div class="card cg"><div class="l">總庫存量</div><div class="v">{total_stock:,}</div></div>
-  <div class="card"><div class="l">總庫存價值</div><div class="v">${total_value:,.0f}</div></div>
-  <div class="card co"><div class="l">近30天銷貨金額</div><div class="v">${cloud_sales_amt:,.0f}</div></div>
+  <div class="card cb"><div class="l">Products (SKU)</div><div class="v">{total_sku}</div></div>
+  <div class="card cg"><div class="l">Total Stock</div><div class="v">{total_stock:,}</div></div>
+  <div class="card"><div class="l">Total Value</div><div class="v">${total_value:,.0f}</div></div>
+  <div class="card co"><div class="l">30-Day Sales Revenue</div><div class="v">${cloud_sales_amt:,.0f}</div></div>
 </div>
 <div class="hd">
-  <div class="hc" style="border-top:4px solid #059669"><div class="nm" style="color:#059669">{sell_pct}%</div><div class="nm" style="font-size:24px">{total_sku - low_stock - oos}</div><div class="lb">庫存正常 (SKU)</div></div>
+  <div class="hc" style="border-top:4px solid #059669"><div class="nm" style="color:#059669">{sell_pct}%</div><div class="nm" style="font-size:24px">{total_sku - low_stock - oos}</div><div class="lb">OK (SKU)</div></div>
   <div class="hc" style="border-top:4px solid #f59e0b"><div class="nm" style="color:#f59e0b">{low_pct}%</div><div class="nm" style="font-size:24px">{low_stock}</div><div class="lb">LOS (SKU)</div></div>
   <div class="hc" style="border-top:4px solid #dc2626"><div class="nm" style="color:#dc2626">{oos_pct}%</div><div class="nm" style="font-size:24px">{oos}</div><div class="lb">OOS (SKU)</div></div>
 </div>
 <div style="margin:12px 0;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-  <button onclick="location.reload()" style="background:#2563eb;color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-weight:700">🔄 重新整理頁面</button>
-  <button id="btn-refresh-chart" style="background:#0891b2;color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-weight:700">📊 重新產生圖表</button>
-  <span style="color:#64748b;font-size:13px">💡 按 Enter 或點別處儲存庫存編輯</span>
-  <button onclick="toggleRecv()" class="rec-toggle" id="rec-toggle-btn">👁 顯示收貨</button>
+  <button onclick="location.reload()" style="background:#2563eb;color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-weight:700">↻ Refresh Page</button>
+  <button id="btn-refresh-chart" style="background:#0891b2;color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-weight:700">📊 Regenerate Chart</button>
+  <span style="color:#64748b;font-size:13px">💡 Press Enter or click away to save stock edit</span>
+  <button onclick="toggleRecv()" class="rec-toggle" id="rec-toggle-btn">👁 Show Receive</button>
 </div>
-<div class="st">📋 各品類庫存一覽</div>
+<div class="st">📋 📋 Inventory by Category</div>
 <div class="stbl">
 <table>
-<thead><tr><th>品名</th><th>類別</th><th>零售價</th><th>庫存(可編輯)</th><th>最大容量</th><th>補貨點</th><th>庫存率</th><th>狀態</th><th>叫貨量</th><th>叫貨</th><th colspan="2">到貨時間</th><th class="hidden-col">收貨時間</th></tr></thead>
+<thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Stock(edit)</th><th>Max Cap</th><th>Reorder</th><th>Rate</th><th>Status</th><th>Order</th><th>Order</th><th colspan="2">Arrival</th><th class="hidden-col">Receive Time</th></tr></thead>
 <tbody id="tb">{trs}</tbody>
 </table>
 </div>
-<div class="st">📈 庫存儀表板</div>
-<div class="cht"><img id="ci" src="/reports/edge_slide_{STORE_ID}.png" alt="儀表板" onerror="this.style.display='none'"></div>
-<div class="st">📦 各物品每日銷售圖表</div>
+<div class="st">📈 📈 Stock Dashboard</div>
+<div class="cht"><img id="ci" src="/reports/edge_slide_{STORE_ID}.png" alt="Dashboard" onerror="this.style.display='none'"></div>
+<div class="st">📦 📦 Daily Sales by Item</div>
 <div style="margin-bottom:10px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
-  <label style="font-weight:700;font-size:14px">選擇品項：</label>
+  <label style="font-weight:700;font-size:14px">Item:</label>
   <select id="sales-product-select" style="padding:6px 10px;font-size:14px;border:2px solid #000;border-radius:6px;min-width:250px">
-    <option value="__all__">全部顯示 (所有品項合計)</option>
+    <option value="__all__">All items (total)</option>
   </select>
 </div>
 <div class="cht" id="stc-chart-container" style="background:#fff;border:2px solid #000;border-radius:8px;padding:16px;min-height:320px">
   <canvas id="stc-chart" height="280"></canvas>
-  <p id="stc-empty" style="color:#64748b;text-align:center;display:none">無銷售資料</p>
+  <p id="stc-empty" style="color:#64748b;text-align:center;display:none">No sales data</p>
 </div>
-<div class="st">💡 庫存洞察</div>
-<div class="insight">{"建議優先補貨低庫存品項。" if low_stock > 0 else "目前庫存狀況良好。"} 近30天銷售 {cloud_sales_qty} 件，銷貨金額 ${cloud_sales_amt:,.0f}。</div>
-<div class="footer">USI Smart Retail OS · EDGE 端報表 · {now_str}</div>
+<div class="st">💡 💡 Stock Insights</div>
+<div class="insight">{"Priority: restock low-stock items." if low_stock > 0 else "Stock status is healthy."} 30-day sales {cloud_sales_qty} units, revenue ${cloud_sales_amt:,.0f}。</div>
+<div class="footer">USI Smart Retail OS · EDGE Report · {now_str}</div>
 </div>
 <script>
 /* f-string safe - all braces doubled */
@@ -589,7 +589,7 @@ function updateRowBadge(tr,stockVal,reorderVal){{
   rc.textContent=rate+"%";
   if(stockVal<=0){{bs.className="bo bo-oos col-badge";bs.textContent="OOS"}}
   else if(stockVal<reorderVal){{bs.className="bo bo-re col-badge";bs.textContent="LOS"}}
-  else{{bs.className="bo bo-ok col-badge";bs.textContent="正常"}}
+  else{{bs.className="bo bo-ok col-badge";bs.textContent="OK"}}
 }}
 
 function updateSummary(){{
@@ -604,12 +604,12 @@ function updateSummary(){{
   var lr=total>0?Math.round(oos/total*100):0;
   var lr2=total>0?Math.round(los/total*100):0;
   var hcs=document.querySelectorAll(".hc");
-  if(hcs[0])hcs[0].innerHTML='<div class="nm" style="font-size:28px;color:#10b981">'+rate+'%</div><div class="nm" style="font-size:24px">'+ok+'</div><div class="lb">正常 (SKU)</div>';
+  if(hcs[0])hcs[0].innerHTML='<div class="nm" style="font-size:28px;color:#10b981">'+rate+'%</div><div class="nm" style="font-size:24px">'+ok+'</div><div class="lb">OK (SKU)</div>';
   if(hcs[1])hcs[1].innerHTML='<div class="nm" style="font-size:28px;color:#f59e0b">'+lr2+'%</div><div class="nm" style="font-size:24px">'+los+'</div><div class="lb">LOS (SKU)</div>';
   if(hcs[2])hcs[2].innerHTML='<div class="nm" style="font-size:28px;color:#dc2626">'+lr+'%</div><div class="nm" style="font-size:24px">'+oos+'</div><div class="lb">OOS (SKU)</div>';
 }}
 
-document.addEventListener("DOMContentLoaded",function(){{  // OOS/LOS auto-fill 叫貨量
+document.addEventListener("DOMContentLoaded",function(){{  // OOS/LOS auto-fill Order
   document.querySelectorAll("#tb tr").forEach(function(tr){{
     var badge=tr.querySelector(".col-badge");
     if(badge&&(badge.textContent==="OOS"||badge.textContent==="LOS")){{
@@ -626,34 +626,34 @@ document.addEventListener("DOMContentLoaded",function(){{  // OOS/LOS auto-fill 
   document.querySelectorAll(".ed-stock").forEach(function(c){{
     c.addEventListener("blur",function(){{
       var tr=this.closest("tr"),pid=tr.dataset.pid,val=parseInt(this.textContent.replace(/,/g,""));
-      if(isNaN(val)||val<0){{toast("請輸入有效數字",1);return;}}
+      if(isNaN(val)||val<0){{toast("Enter a valid number",1);return;}}
       var ro=parseInt(tr.dataset.reorder);
       fetch("/api/update_stock",{{method:"POST",headers:{{"Content-Type":"application/json"}},body:JSON.stringify({{product_id:pid,store_stock:val}})}})
       .then(function(r){{return r.json()}}).then(function(d){{
-        if(d.ok){{toast("✅ 已更新");tr.dataset.stock=val;updateRowBadge(tr,val,ro);}}
-      }}).catch(function(e){{toast("儲存失敗: "+e,1)}});
+        if(d.ok){{toast("✅ Updated");tr.dataset.stock=val;updateRowBadge(tr,val,ro);}}
+      }}).catch(function(e){{toast("Save failed: "+e,1)}});
     }});
     c.addEventListener("keydown",function(e){{if(e.key==="Enter"){{e.preventDefault();this.blur()}}}});
   }});
   document.querySelectorAll(".ed-reorder").forEach(function(c){{
     c.addEventListener("blur",function(){{
       var tr=this.closest("tr"),pid=tr.dataset.pid,val=parseInt(this.textContent.replace(/,/g,""));
-      if(isNaN(val)||val<0){{toast("請輸入有效數字",1);return;}}
+      if(isNaN(val)||val<0){{toast("Enter a valid number",1);return;}}
       fetch("/api/update_reorder",{{method:"POST",headers:{{"Content-Type":"application/json"}},body:JSON.stringify({{product_id:pid,reorder_level:val}})}})
       .then(function(r){{return r.json()}}).then(function(d){{
-        if(d.ok){{toast("✅ 補貨點已更新");tr.dataset.reorder=val;var sk=parseInt(tr.dataset.stock);updateRowBadge(tr,sk,val);}}
-      }}).catch(function(e){{toast("儲存失敗: "+e,1)}});
+        if(d.ok){{toast("✅ Reorder point updated");tr.dataset.reorder=val;var sk=parseInt(tr.dataset.stock);updateRowBadge(tr,sk,val);}}
+      }}).catch(function(e){{toast("Save failed: "+e,1)}});
     }});
     c.addEventListener("keydown",function(e){{if(e.key==="Enter"){{e.preventDefault();this.blur()}}}});
   }});
   document.querySelectorAll(".ed-capacity").forEach(function(c){{
     c.addEventListener("blur",function(){{
       var tr=this.closest("tr"),pid=tr.dataset.pid,val=parseInt(this.textContent.replace(/,/g,""));
-      if(isNaN(val)||val<0){{toast("請輸入有效數字",1);return;}}
+      if(isNaN(val)||val<0){{toast("Enter a valid number",1);return;}}
       fetch("/api/update_capacity",{{method:"POST",headers:{{"Content-Type":"application/json"}},body:JSON.stringify({{product_id:pid,max_capacity:val}})}})
       .then(function(r){{return r.json()}}).then(function(d){{
-        if(d.ok){{toast("✅ 最大容量已更新");var sk=parseInt(tr.dataset.stock),ro=parseInt(tr.dataset.reorder);updateRowBadge(tr,sk,ro);}}
-      }}).catch(function(e){{toast("儲存失敗: "+e,1)}});
+        if(d.ok){{toast("✅ Max capacity updated");var sk=parseInt(tr.dataset.stock),ro=parseInt(tr.dataset.reorder);updateRowBadge(tr,sk,ro);}}
+      }}).catch(function(e){{toast("Save failed: "+e,1)}});
     }});
     c.addEventListener("keydown",function(e){{if(e.key==="Enter"){{e.preventDefault();this.blur()}}}});
   }});
@@ -671,8 +671,8 @@ document.addEventListener("DOMContentLoaded",function(){{  // OOS/LOS auto-fill 
         if(state[pid]){{
           var s=state[pid];
           if(s.is_ready){{
-            if(pc)pc.textContent="可收貨";
-            if(pbtn)pbtn.textContent="已到貨";
+            if(pc)pc.textContent="Ready";
+            if(pbtn)pbtn.textContent="Arrived";
             if(rbtn)rbtn.disabled=false;
           }}else{{
             if(pc)pc.textContent="⏱"+s.remaining+"s";
@@ -683,7 +683,7 @@ document.addEventListener("DOMContentLoaded",function(){{  // OOS/LOS auto-fill 
           if(pc&&pc.textContent!=="--:--:--")pc.textContent="--:--:--";
           if(rbtn)rbtn.disabled=true;
           if(pbtn)pbtn.disabled=false;
-          if(pbtn)pbtn.textContent="🔁叫貨";
+          if(pbtn)pbtn.textContent="🔁Order";
         }}
       }});
       setTimeout(pollPurchase, 1000);
@@ -697,14 +697,14 @@ document.addEventListener("DOMContentLoaded",function(){{  // OOS/LOS auto-fill 
       var pid=this.dataset.pid,inp=document.querySelector(".rq[data-pid='"+pid+"']");
       if(!inp)return;
       var qty=parseInt(inp.value);
-      if(!qty||qty<=0){{toast("請先輸入叫貨數量",1);return;}}
+      if(!qty||qty<=0){{toast("Enter order qty first",1);return;}}
       this.disabled=true;
-      this.textContent="已叫貨...";
+      this.textContent="Ordering...";
       fetch("/api/purchase",{{method:"POST",headers:{{"Content-Type":"application/json"}},body:JSON.stringify({{product_id:pid,quantity:qty}})}})
       .then(function(r){{return r.json()}}).then(function(d){{
-        if(d.ok){{toast("✅ 已叫貨 "+qty+" 件");}}
-        else{{toast("叫貨失敗: "+(d.error||""),1);b.disabled=false;b.textContent="🔁叫貨";}}
-      }}).catch(function(e){{toast("叫貨失敗: "+e,1);b.disabled=false;b.textContent="🔁叫貨";}});
+        if(d.ok){{toast("✅ Ordered "+qty+" pcs");}}
+        else{{toast("Order failed: "+(d.error||""),1);b.disabled=false;b.textContent="🔁Order";}}
+      }}).catch(function(e){{toast("Order failed: "+e,1);b.disabled=false;b.textContent="🔁Order";}});
     }});
   }});
 
@@ -712,11 +712,11 @@ document.addEventListener("DOMContentLoaded",function(){{  // OOS/LOS auto-fill 
   document.querySelectorAll(".btn-rec").forEach(function(b){{
     b.addEventListener("click",function(){{
       var pid=this.dataset.pid,inp=document.querySelector(".rq[data-pid='"+pid+"']"),qty=parseInt(inp.value);
-      if(!qty||qty<=0){{toast("叫貨量需大於0",1);return;}}
+      if(!qty||qty<=0){{toast("Order qty must be >0",1);return;}}
       var row=this.closest("tr");
       var rc=row.querySelector(".rt-col");
       var pcc=row.querySelector(".pt-col");
-      this.disabled=true;this.textContent="處理中...";
+      this.disabled=true;this.textContent="Processing...";
       fetch("/api/receive",{{method:"POST",headers:{{"Content-Type":"application/json"}},body:JSON.stringify({{product_id:pid,quantity:qty}})}})
       .then(function(r){{return r.json()}}).then(function(d){{
         if(d.ok){{
@@ -726,42 +726,42 @@ document.addEventListener("DOMContentLoaded",function(){{  // OOS/LOS auto-fill 
           var s=String(now.getSeconds()).padStart(2,"0");
           if(rc)rc.textContent=h+":"+m+":"+s;
           var sc=row.querySelector(".ed-stock");if(sc)sc.textContent=d.new_stock.toLocaleString();
-          toast("✅ 收貨完成 新庫存: "+d.new_stock);
+          toast("✅ Receive done. New stock: "+d.new_stock);
           if(pcc)pcc.textContent="done";
           inp.value=0;
           fetch("/api/purchase_clear",{{method:"POST",headers:{{"Content-Type":"application/json"}},body:JSON.stringify({{product_id:pid}})}});
           updateSummary();
           var ci=document.getElementById("ci");if(ci){{ci.src=ci.src.split("?")[0]+"?t="+Date.now();}}
           var ro=parseInt(row.dataset.reorder);updateRowBadge(row,d.new_stock,ro);
-        }}else{{toast("收貨失敗: "+(d.error||""),1);b.disabled=false;b.textContent="📥 收貨";}}
-      }}).catch(function(e){{toast("收貨失敗: "+e,1);b.disabled=false;b.textContent="📥 收貨";}});
+        }}else{{toast("Receive failed: "+(d.error||""),1);b.disabled=false;b.textContent="📥 Receive";}}
+      }}).catch(function(e){{toast("Receive failed: "+e,1);b.disabled=false;b.textContent="📥 Receive";}});
     }});
   }});
 
 window.doReceive = function(pid,qty,inp,btn){{
-  btn.disabled=true;btn.textContent="處理中...";
+  btn.disabled=true;btn.textContent="Processing...";
   fetch("/api/receive",{{method:"POST",headers:{{"Content-Type":"application/json"}},body:JSON.stringify({{product_id:pid,quantity:qty}})}})
   .then(function(r){{return r.json()}}).then(function(d){{
     if(d.ok){{
       var tr=document.querySelector("tr[data-pid='"+pid+"']"),sc=tr.querySelector(".ed-stock");
-      sc.textContent=d.new_stock.toLocaleString();toast("✅ 收貨完成 新庫存: "+d.new_stock);updateSummary();var ci=document.getElementById("ci");if(ci){{ci.src=ci.src.split("?")[0]+"?t="+Date.now();}}var n2=new Date();var h2=String(n2.getHours()).padStart(2,"0");var m2=String(n2.getMinutes()).padStart(2,"0");var s2=String(n2.getSeconds()).padStart(2,"0");var pc2=tr.querySelector(".pt-col");if(pc2)pc2.textContent=h2+":"+m2+":"+s2;
+      sc.textContent=d.new_stock.toLocaleString();toast("✅ Receive done. New stock: "+d.new_stock);updateSummary();var ci=document.getElementById("ci");if(ci){{ci.src=ci.src.split("?")[0]+"?t="+Date.now();}}var n2=new Date();var h2=String(n2.getHours()).padStart(2,"0");var m2=String(n2.getMinutes()).padStart(2,"0");var s2=String(n2.getSeconds()).padStart(2,"0");var pc2=tr.querySelector(".pt-col");if(pc2)pc2.textContent=h2+":"+m2+":"+s2;
       var ro=parseInt(tr.dataset.reorder);updateRowBadge(tr,d.new_stock,ro);
       inp.value='';
     }}
-  }}).catch(function(e){{toast("收貨失敗: "+e,1)}}).finally(function(){{btn.disabled=false;if(btn.classList.contains("btn-rec")){{btn.textContent="📥 收貨"}}else{{btn.textContent="🔁叫貨"}}}});
+  }}).catch(function(e){{toast("Receive failed: "+e,1)}}).finally(function(){{btn.disabled=false;if(btn.classList.contains("btn-rec")){{btn.textContent="📥 Receive"}}else{{btn.textContent="🔁Order"}}}});
 }}
   loadProductOptions();
   document.getElementById("btn-refresh-chart").addEventListener("click",function(){{
     fetch("/api/refresh_chart").then(function(r){{return r.json()}}).then(function(d){{
-      if(d.ok){{document.getElementById("ci").src=d.path+"?t="+Date.now();toast("✅ 圖表已更新")}}
-    }}).catch(function(e){{toast("更新圖表失敗: "+e,1)}});
+      if(d.ok){{document.getElementById("ci").src=d.path+"?t="+Date.now();toast("✅ Chart updated")}}
+    }}).catch(function(e){{toast("Chart update failed: "+e,1)}});
   }});
 }});
 
 function loadProductOptions(){{
   fetch("/api/product_options").then(function(r){{return r.json()}}).then(function(opts){{
     var sel=document.getElementById("sales-product-select");
-    sel.innerHTML="<option value='__all__'>全部顯示 (所有品項合計)</option>";
+    sel.innerHTML="<option value='__all__'>All items (total)</option>";
     productMap={{}};
     // build category-to-name map for cloud data matching
     window.catToProduct={{}};
@@ -787,9 +787,9 @@ function renderSales(productId){{
   if(!allSalesData||!allSalesData.length){{document.getElementById("stc-empty").style.display="block";return;}}
   var filtered=allSalesData;
   if(productId!=="__all__"){{
-    // 用 category 過濾（CLOUD category 與 EDGE category 一致）
+    // Filter by category (CLOUD category = EDGE category)
     var catToMatch = null;
-    // 從 productMap 的反查：找到這個 product_id 對應的 category
+    // Reverse lookup: find category for product_id from productMap
     var sel=document.getElementById("sales-product-select");
     for(var i=0;i<sel.options.length;i++){{
       if(sel.options[i].value===productId){{
@@ -849,7 +849,7 @@ function renderSales(productId){{
     var y=pad.top+ch-barH;
     // bar
     ctx.fillStyle="rgba(37,99,235,0.8)";
-    ctx.beginPath();ctx.roundRect(x,y,barW,barH,3);ctx.fill();
+    ctx.beginPath();ctx.rect(x,y,barW,barH);ctx.fill();
     ctx.strokeStyle="#1e3a8a";ctx.lineWidth=1.5;ctx.stroke();
     // value on top
     ctx.fillStyle="#1f2937";ctx.font="11px Microsoft JhengHei,sans-serif";ctx.textAlign="center";
@@ -882,10 +882,10 @@ function toggleRecv(){{
   var els=document.querySelectorAll(".hidden-col"),btn=document.getElementById("rec-toggle-btn");
   var hidden=els.length>0&&els[0].style.display!=="table-cell";
   els.forEach(function(el){{el.style.display=hidden?"table-cell":"none"}});
-  btn.textContent=hidden?"👁 隱藏收貨":"👁 顯示收貨";
+  btn.textContent=hidden?"👁 👁 Hide Receive":"👁 Show Receive";
   btn.classList.toggle("active",hidden);
 }}
-// ========== 跨裝置叫貨量同步 ==========
+// ========== Cross-device Order Sync ==========
 var _syncingQty = false;
 function syncSuggestedQty(el) {{
   var pid=el.dataset.pid, qty=parseInt(el.value)||0;
